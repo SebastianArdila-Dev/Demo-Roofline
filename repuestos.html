@@ -159,6 +159,19 @@
   @media (max-width: 1024px) { .parts-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px)  { .parts-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
   @media (max-width: 400px)  { .parts-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .nav-back { display: none; }
+    .hero { padding: 110px 16px 60px; }
+    .filter-tabs { gap: 6px; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; scrollbar-width: none; }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { flex-shrink: 0; padding: 7px 16px; font-size: 13px; }
+    .parts-grid { gap: 10px; }
+  }
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 2rem; }
+    .search-wrap { margin-bottom: 28px; }
+    .section { padding: 60px 16px; }
+  }
 
   .part-card {
     background: var(--card-bg);

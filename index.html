@@ -111,8 +111,8 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .mob-nav a:hover { opacity: .5; }
 @media (max-width: 680px) {
   .nav__links, .nav__cta { display: none; }
-  .nav__burger { display: flex; }
-  .mob-nav { display: flex; }
+  .nav__burger { display: none !important; }
+  .mob-nav { display: none !important; }
 }
 
 /* ══════════════════════════════════════════
@@ -497,6 +497,64 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
 .mega-footer a:hover { color: #fff; }
 @media (max-width:900px) { .mega-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width:580px) { .mega-grid { grid-template-columns: 1fr 1fr; } .mega-item:nth-child(5) { grid-column: span 2; } }
+@media (max-width:420px) {
+  .mega-grid { grid-template-columns: 1fr; }
+  .mega-item:nth-child(5) { grid-column: auto; }
+  .mega-item__desc { display: none; }
+  .mega-menu { padding-top: 72px; padding-bottom: 20px; justify-content: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .mega-item { padding: 16px 18px; gap: 8px; flex-direction: row; align-items: center; border-radius: 14px; }
+  .mega-item__icon { font-size: 22px; }
+  .mega-item__tag { display: none; }
+  .mega-item__title { font-size: 15px; flex: 1; }
+  .mega-item__arrow { margin-left: auto; flex-shrink: 0; }
+}
+
+/* Quick nav links inside mega menu for mobile (replaces mob-nav) */
+.mega-quick { display: none; }
+@media (max-width:680px) {
+  .mega-quick {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    width: min(90vw, 1140px); margin-top: 28px;
+    padding-top: 22px; border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .mega-quick a {
+    font-size: 13px; font-weight: 500; color: rgba(255,255,255,.65);
+    padding: 7px 16px; border-radius: 980px;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    transition: all .2s; text-decoration: none;
+  }
+  .mega-quick a:hover { color: #fff; background: rgba(255,255,255,.12); }
+}
+
+/* catBox mobile margin */
+@media (max-width:480px) {
+  #catBox { margin: 0 8px; border-radius: 18px; }
+  .cat-inner { padding: 20px 16px; }
+  .prod-grid { gap: 8px; }
+}
+
+/* Hero padding on very small screens */
+@media (max-width:390px) {
+  .hero__body { padding-top: 100px; }
+  .hero__h1 { font-size: 44px; }
+  .hero__ctas { flex-direction: column; }
+  .hero__ctas .btn { width: 100%; justify-content: center; }
+}
+
+/* Stats on mobile */
+@media (max-width:480px) {
+  .stats-left p { display: none; }
+}
+
+/* Footer on mobile */
+@media (max-width:480px) {
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
+
+/* Nosotros section on mobile */
+@media (max-width:480px) {
+  .nos-body { padding: 32px 20px; }
+}
   </style>
 </head>
 <body>
@@ -557,6 +615,14 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
   <div class="mega-footer">
     <p>© 2024 Roofline Company · Bogotá, Colombia</p>
     <a href="https://wa.me/573108761410?text=Hola%20Roofline" target="_blank">+57 310 876 1410</a>
+  </div>
+  <div class="mega-quick">
+    <a href="#galeria" onclick="closeMega()">Galería</a>
+    <a href="#productos" onclick="closeMega()">Productos</a>
+    <a href="#servicios" onclick="closeMega()">Servicios</a>
+    <a href="nosotros.html" onclick="closeMega()">Nosotros</a>
+    <a href="#contacto" onclick="closeMega()">Contacto</a>
+    <a href="https://wa.me/573108761410" target="_blank" onclick="closeMega()" style="color:var(--green);border-color:rgba(37,211,102,.25);background:rgba(37,211,102,.08)">WhatsApp</a>
   </div>
 </div>
 

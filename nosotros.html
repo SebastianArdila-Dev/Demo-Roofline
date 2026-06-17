@@ -110,9 +110,23 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 @keyframes sline { 0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom} }
 
 @media (max-width:768px) {
-  .hero__content { grid-template-columns: 1fr; gap: 40px; padding-bottom: 60px; }
-  .hero__paula-wrap { width: clamp(160px,50vw,240px); }
+  .hero__content { grid-template-columns: 1fr; gap: 32px; padding-bottom: 60px; padding-top: 96px; }
+  .hero__paula-wrap { width: clamp(180px,55vw,260px); }
   .hero__char-sm { right: 0; top: -20px; height: 80px; }
+  .hero__ctas { flex-wrap: wrap; }
+  .hero__ctas .btn { flex: 1; min-width: 140px; justify-content: center; }
+}
+@media (max-width:500px) {
+  .hero__h1 { font-size: clamp(36px,10vw,52px); }
+  .hero__ctas { flex-direction: column; }
+  .hero__ctas .btn { width: 100%; }
+  .historia .wrap { padding: 0; }
+  .equipo__head h2 { font-size: clamp(24px,7vw,36px); }
+  .nos-cta h2 { font-size: clamp(24px,7vw,40px); }
+  .cta-btns { flex-direction: column; align-items: center; }
+  .cta-btns .btn { width: 100%; justify-content: center; max-width: 320px; }
+  .mascota-inner { text-align: center; }
+  .mascota-tags { justify-content: center; }
 }
 
 /* ══ HISTORIA ══ */

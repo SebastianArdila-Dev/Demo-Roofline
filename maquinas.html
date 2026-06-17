@@ -775,11 +775,24 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
-    .hero { height: 90vh; }
-    .hero__ctas { flex-direction: column; align-items: center; }
+    .hero { height: auto; min-height: 100svh; padding: 110px 16px 60px; }
+    .hero__ctas { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; }
+    .hero__ctas a { justify-content: center; }
     .tabs { padding: 0 16px; }
     .footer__inner { flex-direction: column; }
     .footer__bottom { flex-direction: column; text-align: center; }
+    .machines-section { padding: 60px 16px; }
+    .specs-tag { font-size: 10px; }
+    .machine-card { padding: 20px; }
+    .price { font-size: 1.1rem; }
+    .benefits-section { padding: 60px 16px; }
+    .compare-section { padding: 60px 16px; }
+  }
+  @media (max-width: 420px) {
+    .hero__title { font-size: clamp(2rem, 10vw, 2.6rem); }
+    .hero__sub { font-size: 0.95rem; }
+    .section-title h2 { font-size: 1.6rem; }
+    .tab { padding: 14px 16px; font-size: 13px; }
   }
 </style>
 </head>

@@ -204,6 +204,20 @@
     margin-top: 48px;
   }
   @media (max-width: 800px) { .kits-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .nav-back { display: none; }
+    .hero { padding: 110px 16px 60px; }
+    .filter-tabs { gap: 6px; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; scrollbar-width: none; }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { flex-shrink: 0; padding: 7px 16px; font-size: 13px; }
+    .products-grid { gap: 10px; }
+    .kits-grid { gap: 16px; }
+  }
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 2rem; }
+    .search-wrap { margin-bottom: 28px; }
+    .section { padding: 60px 16px; }
+  }
 
   .kit-card {
     background: linear-gradient(135deg, rgba(0,113,227,.1), rgba(64,156,255,.05));
