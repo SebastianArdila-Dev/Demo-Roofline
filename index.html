@@ -583,53 +583,79 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
   box-shadow: 0 14px 34px rgba(0,113,227,.28);
 }
 .location__stage {
-  perspective: 1400px;
-  min-height: clamp(330px,48vw,540px);
+  perspective: 1600px;
+  min-height: clamp(360px,50vw,590px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .macbook {
-  width: min(100%, 760px);
+  width: min(100%, 860px);
   transform-style: preserve-3d;
-  filter: drop-shadow(0 38px 80px rgba(0,0,0,.58));
+  filter: drop-shadow(0 46px 94px rgba(0,0,0,.64));
   will-change: transform;
 }
 .macbook__lid {
   position: relative;
-  border-radius: 26px 26px 14px 14px;
-  padding: 12px;
-  background: linear-gradient(145deg, #3a3a3c, #151517 58%, #060607);
-  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 30px 30px 18px 18px;
+  padding: 10px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.18), transparent 22%),
+    linear-gradient(145deg, #32343a, #17181c 48%, #07080a 100%);
+  border: 1px solid rgba(255,255,255,.13);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.22),
-    inset 0 -1px 0 rgba(255,255,255,.05);
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 0 -1px 0 rgba(255,255,255,.05),
+    0 0 0 1px rgba(0,0,0,.45);
 }
-.macbook__camera {
+.macbook__notch {
   position: absolute;
-  top: 6px;
+  top: 10px;
+  left: 50%;
+  width: min(18%, 132px);
+  height: 24px;
+  border-radius: 0 0 16px 16px;
+  background: #07080a;
+  transform: translateX(-50%);
+  z-index: 4;
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,.07);
+}
+.macbook__notch::after {
+  content: '';
+  position: absolute;
+  top: 7px;
   left: 50%;
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(255,255,255,.22);
+  background: rgba(92,117,151,.45);
   transform: translateX(-50%);
-  z-index: 3;
 }
 .macbook__screen {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-radius: 16px;
-  background: #101014;
+  border-radius: 22px;
+  background: #07080a;
   border: 1px solid rgba(255,255,255,.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    inset 0 22px 48px rgba(255,255,255,.035);
 }
-.macbook__screen iframe {
+.map-frame {
+  width: 116%;
+  height: 116%;
+  margin: -4.7% 0 0 -8%;
+  transform-origin: center;
+  will-change: transform;
+}
+.map-frame iframe {
   width: 100%;
   height: 100%;
   border: 0;
-  filter: saturate(.98) contrast(1.04);
-  transform-origin: center;
+  filter: saturate(1.08) contrast(1.03);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .map-bubble {
   position: absolute;
@@ -660,12 +686,16 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 }
 .macbook__base {
   position: relative;
-  width: 108%;
-  height: 28px;
-  margin: -1px -4% 0;
-  border-radius: 0 0 26px 26px;
-  background: linear-gradient(180deg, #d9dade, #8e8f96 42%, #383a40 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+  width: 111%;
+  min-height: clamp(56px,7vw,82px);
+  margin: -1px -5.5% 0;
+  border-radius: 0 0 30px 30px;
+  background:
+    linear-gradient(90deg, transparent 0 7%, rgba(255,255,255,.08) 7.4% 7.7%, transparent 8.1% 91.9%, rgba(255,255,255,.08) 92.3% 92.6%, transparent 93%),
+    linear-gradient(180deg, #575a61 0%, #2f3239 18%, #191b20 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -1px 0 rgba(0,0,0,.55);
 }
 .macbook__base::before {
   content: '';
@@ -673,18 +703,45 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
   top: 0;
   left: 50%;
   width: 18%;
-  height: 8px;
+  height: 9px;
   border-radius: 0 0 12px 12px;
   background: rgba(40,42,48,.42);
   transform: translateX(-50%);
 }
+.macbook__keyboard {
+  position: absolute;
+  left: 13%;
+  right: 13%;
+  top: 17px;
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 3px;
+  opacity: .72;
+}
+.macbook__keyboard span {
+  height: clamp(3px,.7vw,7px);
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(12,13,16,.92), rgba(49,51,57,.72));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+.macbook__trackpad {
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  width: 24%;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.025));
+  border: 1px solid rgba(255,255,255,.08);
+  transform: translateX(-50%);
+}
 .macbook__shadow {
-  width: 72%;
-  height: 28px;
-  margin: 24px auto 0;
+  width: 76%;
+  height: 32px;
+  margin: 26px auto 0;
   border-radius: 50%;
   background: rgba(0,113,227,.16);
-  filter: blur(18px);
+  filter: blur(20px);
 }
 @media (max-width:900px) {
   .location__grid { grid-template-columns: 1fr; }
@@ -697,9 +754,12 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
   .map-actions { flex-direction: column; }
   .map-link { justify-content: center; width: 100%; }
   .map-bubble { left: 5%; right: 5%; max-width: none; }
-  .macbook__lid { border-radius: 18px 18px 10px 10px; padding: 8px; }
-  .macbook__screen { border-radius: 12px; }
-  .macbook__base { height: 20px; border-radius: 0 0 18px 18px; }
+  .macbook__lid { border-radius: 20px 20px 12px 12px; padding: 7px; }
+  .macbook__screen { border-radius: 14px; }
+  .macbook__notch { top: 7px; height: 17px; border-radius: 0 0 11px 11px; }
+  .macbook__base { min-height: 34px; border-radius: 0 0 18px 18px; }
+  .macbook__keyboard { display: none; }
+  .macbook__trackpad { height: 10px; bottom: 7px; }
 }
 
 /* ══════════════════════════════════════════
@@ -1303,20 +1363,30 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
     <div class="location__stage reveal d2" aria-label="Mapa de ubicación de Roofline">
       <div class="macbook" id="mapMacbook">
         <div class="macbook__lid">
-          <div class="macbook__camera"></div>
+          <div class="macbook__notch"></div>
           <div class="macbook__screen">
-            <iframe
-              title="Mapa de Roofline en Bogotá"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia&amp;output=embed"></iframe>
+            <div class="map-frame">
+              <iframe
+                title="Mapa de Roofline en Bogotá"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?hl=es&amp;z=17&amp;q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia&amp;output=embed"></iframe>
+            </div>
             <div class="map-bubble">
               <strong>Roofline Company</strong>
               <span>Av. 1 de Mayo #72-34, Bogotá</span>
             </div>
           </div>
         </div>
-        <div class="macbook__base"></div>
+        <div class="macbook__base">
+          <div class="macbook__keyboard" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="macbook__trackpad"></div>
+        </div>
         <div class="macbook__shadow"></div>
       </div>
     </div>
@@ -1568,8 +1638,8 @@ if (motionOK && document.getElementById('mapMacbook')) {
     }
   );
 
-  gsap.fromTo('.macbook__screen iframe',
-    { scale: 1.12 },
+  gsap.fromTo('.map-frame',
+    { scale: 1.045 },
     {
       scale: 1,
       ease: 'none',
