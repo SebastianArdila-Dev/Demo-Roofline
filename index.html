@@ -53,6 +53,89 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .d3 { transition-delay: .28s; }
 .d4 { transition-delay: .38s; }
 
+@media (min-width: 760px) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 52px;
+  }
+
+  .hero,
+  .gallery,
+  .cat-section,
+  .servicios,
+  .stats,
+  .testi,
+  .nosotros,
+  .location,
+  .cta-section,
+  footer {
+    scroll-snap-align: start;
+    scroll-margin-top: 52px;
+  }
+}
+
+.snap-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  --mx: 50%;
+  --my: 50%;
+}
+
+.snap-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(64,156,255,.26), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.14), transparent 42%);
+  transition: opacity .34s var(--out);
+}
+
+.snap-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  border: 1px solid rgba(64,156,255,.28);
+  transition: opacity .34s var(--out);
+}
+
+.snap-card:hover::before,
+.snap-card:focus-within::before,
+.snap-card:hover::after,
+.snap-card:focus-within::after {
+  opacity: 1;
+}
+
+.snap-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ── BUTTONS ──────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
@@ -212,9 +295,10 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
   opacity: .38;
   transform: scale(.87) translateY(12px);
   filter: blur(2px);
-  transition: opacity .58s var(--out), transform .68s var(--spring), filter .58s var(--out), box-shadow .45s;
+  transition: opacity .58s var(--out), transform .68s var(--spring), filter .58s var(--out), box-shadow .45s, border-color .34s var(--out);
   cursor: pointer;
 }
+.c-slide:hover { border-color: rgba(64,156,255,.24); }
 .c-slide.active {
   opacity: 1;
   transform: scale(1) translateY(0);
@@ -283,8 +367,9 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 
 .prod-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
 
-.prod-card { background: #fff; border-radius: 16px; overflow: hidden; transition: transform .4s var(--out), box-shadow .4s; }
-.prod-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,.1); }
+.prod-card { background: #fff; border-radius: 16px; overflow: hidden; transition: transform .42s var(--spring), box-shadow .42s var(--out); }
+.prod-card:hover,
+.prod-card:focus-within { transform: translateY(-7px) scale(1.012); box-shadow: 0 24px 62px rgba(0,0,0,.14); }
 
 .prod-card__img {
   height: 145px; overflow: hidden; position: relative;
@@ -299,7 +384,8 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .prod-card.open .prod-card__img::after { opacity: 0; }
 .prod-card.open .prod-card__img { height: 264px; }
 .prod-card__img img { width: 100%; height: 264px; object-fit: contain; padding: 12px; transition: transform .5s var(--out); }
-.prod-card:not(.open):hover .prod-card__img img { transform: scale(1.06); }
+.prod-card:not(.open):hover .prod-card__img img,
+.prod-card:not(.open):focus-within .prod-card__img img { transform: scale(1.07); }
 
 .prod-card__img-hint {
   position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
@@ -333,10 +419,13 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .svc-head { margin-bottom: clamp(40px,6vw,64px); }
 .svc-head h2 { font-size: clamp(28px,4.5vw,52px); font-weight: 700; color: #fff; letter-spacing: -.04em; max-width: 460px; }
 .svc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; border-radius: 20px; overflow: hidden; }
-.svc-card { background: #111; padding: clamp(26px,3.5vw,44px); transition: background .3s; }
-.svc-card:hover { background: #161616; }
+.svc-card { background: #111; padding: clamp(26px,3.5vw,44px); transition: background .3s, box-shadow .42s var(--out); }
+.svc-card:hover,
+.svc-card:focus-within { background: #161616; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -1px 0 rgba(64,156,255,.16); }
 .svc-num { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.26); margin-bottom: 22px; }
-.svc-icon { width: 44px; height: 44px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 16px; }
+.svc-icon { width: 44px; height: 44px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 16px; transition: transform .42s var(--spring), box-shadow .34s var(--out); }
+.svc-card:hover .svc-icon,
+.svc-card:focus-within .svc-icon { transform: translateY(-2px) rotate(-4deg); box-shadow: 0 14px 30px rgba(0,113,227,.34); }
 .svc-card h3 { font-size: clamp(15px,1.8vw,20px); font-weight: 600; color: #fff; letter-spacing: -.02em; margin-bottom: 8px; }
 .svc-card p { font-size: 13px; color: rgba(255,255,255,.4); line-height: 1.7; margin-bottom: 20px; }
 .svc-link { font-size: 12px; font-weight: 600; color: var(--blue-l); display: flex; align-items: center; gap: 5px; transition: gap .2s; }
@@ -352,7 +441,8 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .stats-left h2 { font-size: clamp(26px,4vw,50px); font-weight: 700; color: #fff; letter-spacing: -.04em; margin-bottom: 16px; }
 .stats-left p { font-size: clamp(14px,1.3vw,16px); color: rgba(255,255,255,.46); line-height: 1.7; margin-bottom: 24px; }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid rgba(255,255,255,.08); border-radius: 20px; overflow: hidden; }
-.stat-box { background: rgba(255,255,255,.04); padding: clamp(22px,3vw,36px); text-align: center; }
+.stat-box { background: rgba(255,255,255,.04); padding: clamp(22px,3vw,36px); text-align: center; transition: background .3s var(--out), transform .42s var(--spring); }
+.stat-box:hover { background: rgba(255,255,255,.07); transform: translateY(-4px); }
 .stat-num { font-size: clamp(34px,5vw,58px); font-weight: 700; color: #fff; letter-spacing: -.05em; display: block; }
 .stat-plus { color: var(--blue-l); }
 .stat-label { font-size: 11px; color: rgba(255,255,255,.33); margin-top: 5px; }
@@ -386,6 +476,231 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .nos-item { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.7); }
 .nos-bullet { width: 6px; height: 6px; background: var(--blue-l); border-radius: 50%; flex-shrink: 0; }
 @media (max-width:768px) { .nosotros { grid-template-columns: 1fr; } .nos-img { min-height: 220px; } .nos-img-grad { background: linear-gradient(to top, #000, transparent 50%); } }
+
+/* ══════════════════════════════════════════
+   UBICACIÓN
+══════════════════════════════════════════ */
+.location {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #000 0%, #05070b 48%, #000 100%);
+  padding: var(--sec) clamp(20px,5vw,60px);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.location::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 72%, transparent);
+  opacity: .55;
+}
+.location__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: .82fr 1.18fr;
+  gap: clamp(32px,6vw,78px);
+  align-items: center;
+}
+.location__copy h2 {
+  font-size: clamp(28px,4.8vw,58px);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.05em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.location__copy > p {
+  font-size: clamp(14px,1.4vw,17px);
+  color: rgba(255,255,255,.48);
+  line-height: 1.7;
+  max-width: 430px;
+  margin-bottom: 24px;
+}
+.location__address {
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 18px;
+  max-width: 430px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.location__address strong {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,.42);
+  margin-bottom: 6px;
+}
+.location__address span {
+  display: block;
+  font-size: clamp(17px,2vw,22px);
+  font-weight: 650;
+  color: #fff;
+  letter-spacing: -.02em;
+  line-height: 1.35;
+}
+.map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 15px;
+  border-radius: 980px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.11);
+  color: rgba(255,255,255,.82);
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform .24s var(--spring), background .24s var(--out), border-color .24s var(--out), color .24s var(--out);
+}
+.map-link:hover,
+.map-link:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(0,113,227,.18);
+  border-color: rgba(64,156,255,.38);
+  color: #fff;
+}
+.map-link--primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.map-link--primary:hover,
+.map-link--primary:focus-visible {
+  background: #0077ed;
+  box-shadow: 0 14px 34px rgba(0,113,227,.28);
+}
+.location__stage {
+  perspective: 1400px;
+  min-height: clamp(330px,48vw,540px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.macbook {
+  width: min(100%, 760px);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 38px 80px rgba(0,0,0,.58));
+  will-change: transform;
+}
+.macbook__lid {
+  position: relative;
+  border-radius: 26px 26px 14px 14px;
+  padding: 12px;
+  background: linear-gradient(145deg, #3a3a3c, #151517 58%, #060607);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(255,255,255,.05);
+}
+.macbook__camera {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.22);
+  transform: translateX(-50%);
+  z-index: 3;
+}
+.macbook__screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #101014;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.macbook__screen iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: saturate(.98) contrast(1.04);
+  transform-origin: center;
+}
+.map-bubble {
+  position: absolute;
+  left: 8%;
+  bottom: 8%;
+  max-width: min(72%, 310px);
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(0,0,0,.78);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 16px 38px rgba(0,0,0,.34);
+  pointer-events: none;
+}
+.map-bubble strong {
+  display: block;
+  font-size: 12px;
+  color: var(--blue-l);
+  margin-bottom: 3px;
+}
+.map-bubble span {
+  display: block;
+  font-size: 12px;
+  color: rgba(255,255,255,.72);
+  line-height: 1.45;
+}
+.macbook__base {
+  position: relative;
+  width: 108%;
+  height: 28px;
+  margin: -1px -4% 0;
+  border-radius: 0 0 26px 26px;
+  background: linear-gradient(180deg, #d9dade, #8e8f96 42%, #383a40 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+}
+.macbook__base::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 18%;
+  height: 8px;
+  border-radius: 0 0 12px 12px;
+  background: rgba(40,42,48,.42);
+  transform: translateX(-50%);
+}
+.macbook__shadow {
+  width: 72%;
+  height: 28px;
+  margin: 24px auto 0;
+  border-radius: 50%;
+  background: rgba(0,113,227,.16);
+  filter: blur(18px);
+}
+@media (max-width:900px) {
+  .location__grid { grid-template-columns: 1fr; }
+  .location__copy { max-width: 620px; }
+  .location__stage { min-height: auto; }
+}
+@media (max-width:520px) {
+  .location { padding-inline: 16px; }
+  .location__address { padding: 16px; }
+  .map-actions { flex-direction: column; }
+  .map-link { justify-content: center; width: 100%; }
+  .map-bubble { left: 5%; right: 5%; max-width: none; }
+  .macbook__lid { border-radius: 18px 18px 10px 10px; padding: 8px; }
+  .macbook__screen { border-radius: 12px; }
+  .macbook__base { height: 20px; border-radius: 0 0 18px 18px; }
+}
 
 /* ══════════════════════════════════════════
    CTA
@@ -564,6 +879,7 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
   <a href="#galeria" onclick="closeMob()">Galería</a>
   <a href="#productos" onclick="closeMob()">Productos</a>
   <a href="#servicios" onclick="closeMob()">Servicios</a>
+  <a href="#ubicacion" onclick="closeMob()">Ubicación</a>
   <a href="nosotros.html" onclick="closeMob()">Nosotros</a>
   <a href="#contacto" onclick="closeMob()">Contacto</a>
   <a href="https://wa.me/573108761410" target="_blank" style="color:var(--green)" onclick="closeMob()">WhatsApp</a>
@@ -620,6 +936,7 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
     <a href="#galeria" onclick="closeMega()">Galería</a>
     <a href="#productos" onclick="closeMega()">Productos</a>
     <a href="#servicios" onclick="closeMega()">Servicios</a>
+    <a href="#ubicacion" onclick="closeMega()">Ubicación</a>
     <a href="nosotros.html" onclick="closeMega()">Nosotros</a>
     <a href="#contacto" onclick="closeMega()">Contacto</a>
     <a href="https://wa.me/573108761410" target="_blank" onclick="closeMega()" style="color:var(--green);border-color:rgba(37,211,102,.25);background:rgba(37,211,102,.08)">WhatsApp</a>
@@ -638,6 +955,7 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
       <li><a href="#galeria">Galería</a></li>
       <li><a href="#productos">Productos</a></li>
       <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
       <li><a href="nosotros.html">Nosotros</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
@@ -956,6 +1274,55 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
   </div>
 </section>
 
+<!-- ═══════════ UBICACIÓN ═══════════ -->
+<section class="location" id="ubicacion">
+  <div class="wrap location__grid">
+    <div class="location__copy reveal">
+      <span class="label">Dónde encontrarnos</span>
+      <h2>Visítanos en Bogotá.</h2>
+      <p>Estamos sobre la Avenida Primero de Mayo. Abre la ruta en tu app favorita y llega directo a Roofline.</p>
+      <div class="location__address snap-card">
+        <strong>Dirección</strong>
+        <span>Av. 1 de Mayo #72-34, Bogotá</span>
+        <div class="map-actions">
+          <a class="map-link map-link--primary" href="https://www.google.com/maps/dir/?api=1&amp;destination=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-12a7 7 0 0 0-14 0c0 6.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Google Maps
+          </a>
+          <a class="map-link" href="https://waze.com/ul?q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1&amp;navigate=yes" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17c-1.7 0-3-1.1-3-2.7 0-1.2.8-2.2 2-2.6V11a8 8 0 1 1 8 8H9l-4 3v-5z"/><circle cx="9" cy="13" r=".7" fill="currentColor"/><circle cx="15" cy="13" r=".7" fill="currentColor"/></svg>
+            Waze
+          </a>
+          <a class="map-link" href="https://maps.apple.com/?q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3-6-3z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
+            Apple Maps
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="location__stage reveal d2" aria-label="Mapa de ubicación de Roofline">
+      <div class="macbook" id="mapMacbook">
+        <div class="macbook__lid">
+          <div class="macbook__camera"></div>
+          <div class="macbook__screen">
+            <iframe
+              title="Mapa de Roofline en Bogotá"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia&amp;output=embed"></iframe>
+            <div class="map-bubble">
+              <strong>Roofline Company</strong>
+              <span>Av. 1 de Mayo #72-34, Bogotá</span>
+            </div>
+          </div>
+        </div>
+        <div class="macbook__base"></div>
+        <div class="macbook__shadow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ CTA ═══════════ -->
 <section class="cta-section" id="contacto">
   <div class="cta-inner reveal">
@@ -1166,6 +1533,71 @@ document.querySelectorAll('.prod-card__img').forEach(imgBox => {
 new IntersectionObserver(entries => {
   if (!entries[0].isIntersecting) document.querySelectorAll('.prod-card.open').forEach(c => c.classList.remove('open'));
 }, { threshold: 0.02 }).observe(document.getElementById('productos'));
+
+/* ── POINTER SPOTLIGHT CARDS ── */
+const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+document.querySelectorAll('.prod-card, .svc-card, .stat-box, .mega-item, .c-slide, .location__address').forEach(card => {
+  card.classList.add('snap-card');
+  if (!motionOK) return;
+  card.addEventListener('pointermove', e => {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+  }, { passive: true });
+  card.addEventListener('pointerleave', () => {
+    card.style.setProperty('--mx', '50%');
+    card.style.setProperty('--my', '50%');
+  }, { passive: true });
+});
+
+if (motionOK && document.getElementById('mapMacbook')) {
+  gsap.fromTo('#mapMacbook',
+    { scale: .82, y: 72, rotateX: 13, rotateY: -7 },
+    {
+      scale: 1.06,
+      y: 0,
+      rotateX: 0,
+      rotateY: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#ubicacion',
+        start: 'top 82%',
+        end: 'center center',
+        scrub: 1.15
+      }
+    }
+  );
+
+  gsap.fromTo('.macbook__screen iframe',
+    { scale: 1.12 },
+    {
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#ubicacion',
+        start: 'top 82%',
+        end: 'center center',
+        scrub: 1.15
+      }
+    }
+  );
+
+  gsap.fromTo('.map-bubble',
+    { opacity: 0, y: 18, scale: .94 },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: .7,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#ubicacion',
+        start: 'top 54%',
+        toggleActions: 'play none none reverse'
+      }
+    }
+  );
+}
 
 /* ── TESTIMONIALS ── */
 const tTrack  = document.getElementById('tTrack');
