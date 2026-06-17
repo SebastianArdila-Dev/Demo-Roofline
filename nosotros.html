@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros — Roofline Company</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  background: #000; color: #f5f5f7; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
+button { border: none; background: none; cursor: pointer; font: inherit; color: inherit; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+:root {
+  --blue:  #0071e3; --blue-l:#409cff; --green: #25d366;
+  --w: min(90vw, 1160px);
+  --out:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --sec: clamp(80px,10vw,120px);
+}
+.wrap { width: var(--w); margin: 0 auto; }
+.label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-l); display: block; margin-bottom: 10px; }
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity .9s var(--out), transform .9s var(--out); }
+.reveal.in { opacity: 1; transform: none; }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: 980px; font-size: 15px; font-weight: 500; transition: all .2s; }
+.btn-wa { background: var(--green); color: #fff; }
+.btn-wa:hover { background: #1ebe5a; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(37,211,102,.4); }
+.btn-outline { color: #fff; border: 1.5px solid rgba(255,255,255,.25); }
+.btn-outline:hover { border-color: rgba(255,255,255,.55); }
+.btn-sm { padding: 9px 18px; font-size: 13px; }
+
+/* ══ ANIMATED BACKGROUND ══ */
+.bg-canvas { position: fixed; inset: 0; z-index: -1; background: #000; overflow: hidden; }
+.bg-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0; pointer-events: none; }
+.bg-orb-1 { width: 55vw; height: 55vw; background: radial-gradient(circle, rgba(0,113,227,.45), transparent 70%); top: -15%; left: -10%; animation: orb1 10s ease-in-out infinite alternate; }
+.bg-orb-2 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(191,90,242,.3), transparent 70%); bottom: 0; right: -5%; animation: orb2 13s ease-in-out infinite alternate; }
+.bg-orb-3 { width: 35vw; height: 35vw; background: radial-gradient(circle, rgba(52,211,153,.2), transparent 70%); top: 40%; left: 40%; animation: orb3 9s ease-in-out infinite alternate; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 0%, transparent 100%);
+}
+@keyframes orb1 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(8%,12%) scale(1.25)} }
+@keyframes orb2 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-10%,-8%) scale(1.2)} }
+@keyframes orb3 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-5%,8%) scale(1.15)} }
+
+/* ══ NAV ══ */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 900; height: 52px; transition: background .4s, transform .4s; }
+.nav.solid { background: rgba(0,0,0,.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 0 rgba(255,255,255,.06); }
+.nav.hide { transform: translateY(-100%); }
+.nav__wrap { width: var(--w); margin: 0 auto; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+.nav__logo img { height: 26px; filter: brightness(0) invert(1); opacity: .9; }
+.nav__logo-fb { font-size: 17px; font-weight: 700; color: #fff; }
+.nav__back { display: flex; align-items: center; gap: 7px; font-size: 13px; color: rgba(255,255,255,.65); transition: color .2s; }
+.nav__back:hover { color: #fff; }
+.nav__wa { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.8); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); padding: 7px 15px; border-radius: 980px; transition: all .2s; }
+.nav__wa:hover { background: rgba(255,255,255,.14); color: #fff; }
+
+/* ══ HERO ══ */
+.hero { position: relative; min-height: 100vh; display: flex; align-items: flex-end; overflow: hidden; }
+.hero__content {
+  position: relative; z-index: 2; width: var(--w); margin: 0 auto;
+  padding: clamp(120px,16vw,180px) clamp(20px,5vw,60px) clamp(80px,10vw,120px);
+  display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,80px); align-items: flex-end;
+}
+.hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 980px;
+  padding: 6px 14px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,.8);
+  letter-spacing: .04em; text-transform: uppercase; margin-bottom: 32px; width: fit-content; opacity: 0;
+}
+.hero__dot { width: 6px; height: 6px; background: var(--blue-l); border-radius: 50%; animation: dp 2s ease infinite; }
+@keyframes dp { 0%,100%{opacity:1}50%{opacity:.25} }
+.hero__h1 { font-size: clamp(44px,7vw,90px); font-weight: 700; letter-spacing: -.05em; line-height: .96; color: #fff; opacity: 0; }
+.hero__h1 em { font-style: normal; color: var(--blue-l); }
+.hero__sub { font-size: clamp(15px,1.7vw,18px); color: rgba(255,255,255,.52); line-height: 1.65; font-weight: 300; margin-top: 22px; max-width: 420px; opacity: 0; }
+.hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 36px; opacity: 0; }
+
+/* Paula card */
+.hero__card { position: relative; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(20px); }
+.hero__paula-wrap { position: relative; width: clamp(200px,28vw,340px); }
+.hero__paula-glow { position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, rgba(0,113,227,.35), transparent 65%); animation: pglow 4s ease-in-out infinite alternate; }
+@keyframes pglow { 0%{opacity:.4;transform:scale(.9)}100%{opacity:1;transform:scale(1.1)} }
+.hero__paula-img { width: 100%; border-radius: 28px; position: relative; z-index: 1; filter: drop-shadow(0 40px 100px rgba(0,113,227,.35)); }
+.hero__paula-name { margin-top: 20px; text-align: center; position: relative; z-index: 1; }
+.hero__paula-name h3 { font-size: clamp(18px,2.2vw,26px); font-weight: 700; color: #fff; letter-spacing: -.03em; }
+.hero__paula-name p { font-size: 13px; color: var(--blue-l); font-weight: 500; margin-top: 4px; }
+.hero__char-sm {
+  position: absolute; top: -30px; right: -30px; z-index: 3;
+  height: clamp(80px,10vw,120px); width: auto;
+  animation: charfloat 6s ease-in-out infinite;
+  filter: drop-shadow(0 20px 40px rgba(0,113,227,.3));
+}
+@keyframes charfloat { 0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)} }
+
+.hero__scroll-hint { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: .5; }
+.hero__scroll-hint span { font-size: 10px; color: rgba(255,255,255,.4); letter-spacing: .1em; text-transform: uppercase; }
+.hero__scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(255,255,255,.3), transparent); animation: sline 2s ease infinite; }
+@keyframes sline { 0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom} }
+
+@media (max-width:768px) {
+  .hero__content { grid-template-columns: 1fr; gap: 40px; padding-bottom: 60px; }
+  .hero__paula-wrap { width: clamp(160px,50vw,240px); }
+  .hero__char-sm { right: 0; top: -20px; height: 80px; }
+}
+
+/* ══ HISTORIA ══ */
+.historia { padding: var(--sec) clamp(20px,5vw,60px); }
+.historia .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,7vw,100px); align-items: start; }
+.historia__left h2 { font-size: clamp(26px,4vw,48px); font-weight: 700; color: #fff; letter-spacing: -.04em; line-height: 1.05; margin-bottom: 22px; }
+.historia__left p { font-size: clamp(14px,1.3vw,16px); color: rgba(255,255,255,.5); line-height: 1.75; margin-bottom: 14px; }
+.historia__values { margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
+.val-item { display: flex; align-items: flex-start; gap: 14px; }
+.val-icon { width: 36px; height: 36px; background: rgba(0,113,227,.15); border: 1px solid rgba(0,113,227,.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--blue-l); flex-shrink: 0; margin-top: 2px; }
+.val-text h4 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+.val-text p { font-size: 13px; color: rgba(255,255,255,.43); line-height: 1.5; }
+@media (max-width:700px) { .historia .wrap { grid-template-columns: 1fr; } }
+
+/* Timeline */
+.tl { position: relative; padding-left: 28px; }
+.tl::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(to bottom, var(--blue), rgba(64,156,255,.08)); }
+.tl-item { position: relative; margin-bottom: 36px; opacity: 0; transform: translateX(-10px); transition: opacity .7s var(--out), transform .7s var(--out); }
+.tl-item.in { opacity: 1; transform: none; }
+.tl-item::before { content: ''; position: absolute; left: -32px; top: 8px; width: 9px; height: 9px; background: var(--blue); border: 2px solid #000; border-radius: 50%; box-shadow: 0 0 0 3px rgba(0,113,227,.25); }
+.tl-year { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--blue-l); margin-bottom: 5px; }
+.tl-item h4 { font-size: clamp(15px,1.5vw,17px); font-weight: 600; color: #fff; letter-spacing: -.02em; margin-bottom: 5px; }
+.tl-item p { font-size: 13px; color: rgba(255,255,255,.43); line-height: 1.55; }
+
+/* ══ EQUIPO ══ */
+.equipo { padding: var(--sec) clamp(20px,5vw,60px); border-top: 1px solid rgba(255,255,255,.06); }
+.equipo__head { text-align: center; margin-bottom: clamp(48px,7vw,72px); }
+.equipo__head h2 { font-size: clamp(28px,4.5vw,52px); font-weight: 700; color: #fff; letter-spacing: -.04em; margin-bottom: 10px; }
+.equipo__head p { font-size: 15px; color: rgba(255,255,255,.38); max-width: 400px; margin: 0 auto; }
+.equipo__grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+.member-card {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 22px; overflow: hidden; text-align: center;
+  transition: transform .4s var(--out), border-color .3s, box-shadow .4s; position: relative;
+}
+.member-card:hover { transform: translateY(-8px); border-color: rgba(0,113,227,.3); box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(0,113,227,.15); }
+.member-card:hover .mcglow { opacity: 1; }
+.mcglow { position: absolute; inset: 0; background: radial-gradient(circle at 50% -10%, rgba(0,113,227,.12), transparent 60%); opacity: 0; transition: opacity .4s; pointer-events: none; }
+.member-card--feat { background: linear-gradient(160deg, rgba(0,61,201,.12), rgba(0,0,0,.02) 100%); border-color: rgba(0,113,227,.2); }
+.member-card--feat .mcglow { opacity: .7; }
+
+.mc-photo-wrap { position: relative; padding: clamp(24px,3vw,36px) clamp(24px,3vw,36px) 0; display: flex; justify-content: center; }
+.mc-photo {
+  width: clamp(120px,14vw,180px); height: clamp(120px,14vw,180px); border-radius: 50%;
+  overflow: hidden; background: rgba(255,255,255,.06); box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.member-card--feat .mc-photo { width: clamp(140px,16vw,200px); height: clamp(140px,16vw,200px); border-radius: 22px; box-shadow: 0 24px 70px rgba(0,113,227,.3); }
+.mc-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.mc-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+
+.mc-char {
+  position: absolute; top: 10px; right: 10px;
+  height: clamp(50px,6vw,70px); width: auto;
+  animation: charfloat 5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 20px rgba(0,113,227,.3));
+}
+.mc-badge { position: absolute; top: 12px; left: 12px; font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: var(--blue); color: #fff; padding: 4px 10px; border-radius: 980px; }
+
+.mc-body { padding: clamp(16px,2.5vw,24px); }
+.mc-body h3 { font-size: clamp(16px,1.8vw,20px); font-weight: 700; color: #fff; letter-spacing: -.02em; margin-bottom: 4px; }
+.mc-role { font-size: 11px; font-weight: 600; color: var(--blue-l); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 12px; }
+.mc-bio { font-size: 13px; color: rgba(255,255,255,.43); line-height: 1.55; margin-bottom: 16px; }
+.mc-wa {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+  color: var(--green); background: rgba(37,211,102,.08); border: 1px solid rgba(37,211,102,.2);
+  padding: 7px 14px; border-radius: 980px; transition: all .2s;
+}
+.mc-wa:hover { background: rgba(37,211,102,.15); }
+
+@media (max-width:800px) { .equipo__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width:500px) { .equipo__grid { grid-template-columns: 1fr; } }
+
+/* ══ MASCOTA ══ */
+.mascota { padding: var(--sec) clamp(20px,5vw,60px); border-top: 1px solid rgba(255,255,255,.06); overflow: hidden; }
+.mascota-inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,80px); align-items: center; max-width: 960px; margin: 0 auto; }
+.mascota-img-wrap { display: flex; justify-content: center; position: relative; }
+.mascota-img-wrap img { height: clamp(240px,35vw,420px); width: auto; animation: charfloat 7s ease-in-out infinite; filter: drop-shadow(0 40px 100px rgba(0,113,227,.4)); position: relative; z-index: 1; }
+.mascota-glow { position: absolute; width: 60%; height: 60%; bottom: 0; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, rgba(0,113,227,.35), transparent 70%); filter: blur(40px); z-index: 0; animation: pglow 4s ease-in-out infinite alternate; }
+.mascota-body h2 { font-size: clamp(26px,4vw,46px); font-weight: 700; color: #fff; letter-spacing: -.04em; margin-bottom: 18px; }
+.mascota-body p { font-size: clamp(14px,1.3vw,16px); color: rgba(255,255,255,.48); line-height: 1.7; margin-bottom: 14px; }
+.mascota-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.m-tag { font-size: 12px; font-weight: 600; color: var(--blue-l); background: rgba(64,156,255,.1); border: 1px solid rgba(64,156,255,.2); padding: 5px 12px; border-radius: 980px; }
+@media (max-width:700px) { .mascota-inner { grid-template-columns: 1fr; } }
+
+/* ══ STATS ══ */
+.nos-stats { padding: var(--sec) clamp(20px,5vw,60px); border-top: 1px solid rgba(255,255,255,.06); }
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; border-radius: 20px; overflow: hidden; }
+.sbox { background: rgba(255,255,255,.04); padding: clamp(28px,4vw,44px); text-align: center; transition: background .3s; }
+.sbox:hover { background: rgba(255,255,255,.07); }
+.sbox-num { font-size: clamp(36px,6vw,64px); font-weight: 700; color: #fff; letter-spacing: -.06em; line-height: 1; }
+.sbox-plus { color: var(--blue-l); }
+.sbox-label { font-size: 12px; color: rgba(255,255,255,.33); margin-top: 8px; }
+@media (max-width:700px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+
+/* ══ CTA ══ */
+.nos-cta { padding: var(--sec) clamp(20px,5vw,60px); text-align: center; }
+.nos-cta h2 { font-size: clamp(28px,5vw,56px); font-weight: 700; color: #fff; letter-spacing: -.05em; line-height: 1.02; margin-bottom: 14px; }
+.nos-cta p { font-size: clamp(14px,1.4vw,17px); color: rgba(255,255,255,.45); margin-bottom: 32px; font-weight: 300; }
+.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ══ FOOTER ══ */
+.nos-foot { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); padding: 24px clamp(20px,5vw,60px); }
+.nos-foot-inner { width: var(--w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.nos-foot p { font-size: 12px; color: rgba(255,255,255,.22); }
+.nos-foot a { font-size: 12px; color: rgba(255,255,255,.38); transition: color .2s; }
+.nos-foot a:hover { color: rgba(255,255,255,.75); }
+
+/* WA */
+.wa-fab { position: fixed; bottom: 24px; right: 24px; z-index: 800; width: 52px; height: 52px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 24px rgba(37,211,102,.45); transition: transform .3s; }
+.wa-fab:hover { transform: scale(1.1); }
+.wa-fab::before { content: ''; position: absolute; inset: -8px; border: 1.5px solid rgba(37,211,102,.35); border-radius: 50%; animation: waring 2.5s ease-out infinite; }
+@keyframes waring { 0%{transform:scale(1);opacity:1}100%{transform:scale(1.75);opacity:0} }
+  </style>
+</head>
+<body>
+
+<div class="bg-canvas">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<nav class="nav" id="nav">
+  <div class="nav__wrap">
+    <a href="index.html" class="nav__logo">
+      <img src="imagenes%20facing%20company/Logo%20Roofline.png" alt="Roofline" onerror="this.style.display='none';document.getElementById('nLF').style.display='block'">
+      <span id="nLF" class="nav__logo-fb" style="display:none">Roofline</span>
+    </a>
+    <a href="index.html" class="nav__back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Inicio
+    </a>
+    <a href="https://wa.me/573108761410?text=Hola%20Roofline" target="_blank" class="nav__wa">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__content">
+    <div>
+      <div class="hero__eyebrow" id="hEye"><span class="hero__dot"></span>Roofline Company · Bogotá, Colombia</div>
+      <h1 class="hero__h1" id="hH1">El equipo<br>detrás de<br><em>todo.</em></h1>
+      <p class="hero__sub" id="hSub">Más de 10 años construyendo una empresa que pone la calidad y las personas primero. Este es el equipo que hace posible que tu negocio crezca.</p>
+      <div class="hero__ctas" id="hCtas">
+        <a href="https://wa.me/573108761410?text=Hola%20Roofline%2C%20quiero%20saber%20más" target="_blank" class="btn btn-wa">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Hablar con nosotros
+        </a>
+        <a href="#equipo" class="btn btn-outline btn-sm">Ver el equipo</a>
+      </div>
+    </div>
+    <div class="hero__card" id="hCard">
+      <div class="hero__paula-wrap">
+        <div class="hero__paula-glow"></div>
+        <!-- Pose 3 (bottom-left): background-position 0% 100% -->
+        <div class="hero__paula-img" style="
+          width:clamp(200px,28vw,340px);
+          aspect-ratio:.8;
+          background:url('imagenes%20facing%20company/Paula.png') 0% 100%/200% auto no-repeat;
+          border-radius:28px;
+          position:relative;
+          z-index:1;
+          filter:drop-shadow(0 40px 100px rgba(0,113,227,.35));
+        "></div>
+        <img class="hero__char-sm"
+          src="imagenes%20facing%20company/RoofLine%20Character%20Beta%201.png" alt=""
+          onerror="this.style.display='none'">
+      </div>
+      <div class="hero__paula-name"><h3>Paula</h3><p>Fundadora & Gerente General</p></div>
+    </div>
+  </div>
+  <div class="hero__scroll-hint"><span>Conocer más</span><div class="hero__scroll-line"></div></div>
+</section>
+
+<!-- HISTORIA -->
+<section class="historia">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="label">Nuestra historia</span>
+      <h2 class="historia__left" style="font-size:clamp(26px,4vw,48px);font-weight:700;color:#fff;letter-spacing:-.04em;line-height:1.05;margin-bottom:22px;">Nacimos para<br>cambiar el juego.</h2>
+      <p style="font-size:clamp(14px,1.3vw,16px);color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:14px;">En 2014 vimos una oportunidad: el mercado de insumos gráficos en Colombia estaba lleno de intermediarios que encarecían los productos sin agregar valor real. Decidimos cambiar eso.</p>
+      <p style="font-size:clamp(14px,1.3vw,16px);color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:14px;">Empezamos importando directamente desde fabricantes en Asia y Europa, construyendo relaciones que nos permiten ofrecer mejor calidad al mejor precio.</p>
+      <p style="font-size:clamp(14px,1.3vw,16px);color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:28px;">Pero más allá de los productos, lo que nos define es el compromiso: cada cliente es un socio, no una transacción.</p>
+      <div class="historia__values">
+        <div class="val-item"><div class="val-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="val-text"><h4>Calidad sin compromiso</h4><p>Solo trabajamos con proveedores certificados.</p></div></div>
+        <div class="val-item"><div class="val-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="val-text"><h4>Velocidad de respuesta</h4><p>Despacho 24–48 h y soporte técnico mismo día.</p></div></div>
+        <div class="val-item"><div class="val-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="val-text"><h4>Relaciones a largo plazo</h4><p>El 80% de nuestros clientes llevan más de 3 años.</p></div></div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-item"><span class="tl-year">2014</span><h4>Fundación de Roofline</h4><p>Paula funda Roofline con la misión de democratizar los insumos gráficos en Colombia.</p></div>
+      <div class="tl-item"><span class="tl-year">2016</span><h4>Primer container directo</h4><p>Primer pedido directo desde fabricantes en China. La apuesta por importación directa da frutos.</p></div>
+      <div class="tl-item"><span class="tl-year">2018</span><h4>Expansión a maquinaria</h4><p>Lanzamos plotters e impresoras de gran formato, consolidándonos como proveedor integral.</p></div>
+      <div class="tl-item"><span class="tl-year">2020</span><h4>Servicio técnico propio</h4><p>Técnicos certificados para toda la línea de equipos. Respuesta garantizada &lt;24 h.</p></div>
+      <div class="tl-item"><span class="tl-year">2022</span><h4>+800 clientes activos</h4><p>Presencia a nivel nacional con despachos a más de 20 ciudades del país.</p></div>
+      <div class="tl-item"><span class="tl-year">2024</span><h4>Hoy: +1000 clientes</h4><p>+500 referencias en stock y el compromiso de seguir creciendo juntos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section class="equipo" id="equipo">
+  <div class="wrap">
+    <div class="equipo__head reveal"><span class="label">El equipo</span><h2>Las personas detrás<br>de Roofline.</h2><p>Un equipo con impacto grande. Cada persona aporta para que tu pedido llegue perfecto.</p></div>
+    <div class="equipo__grid">
+
+      <div class="member-card member-card--feat reveal d1">
+        <div class="mcglow"></div>
+        <span class="mc-badge">Fundadora</span>
+        <div class="mc-photo-wrap">
+          <!-- Pose 1 (top-left): background-position 0% 0% -->
+          <div class="mc-photo" style="background:url('imagenes%20facing%20company/Paula.png') 0% 0%/200% auto no-repeat;background-color:#1a1a2e">
+          </div>
+          <img class="mc-char" src="imagenes%20facing%20company/RoofLine%20Character%20Beta%201.png" alt="" onerror="this.style.display='none'">
+        </div>
+        <div class="mc-body">
+          <h3>Paula</h3><p class="mc-role">Fundadora & Gerente General</p>
+          <p class="mc-bio">Visionaria apasionada por las artes gráficas. Fundó Roofline en 2014 para hacer accesibles los mejores insumos del mundo a los talleres colombianos.</p>
+          <a href="https://wa.me/573108761410?text=Hola%20Paula" target="_blank" class="mc-wa"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Escribir</a>
+        </div>
+      </div>
+
+      <div class="member-card reveal d2">
+        <div class="mcglow"></div>
+        <div class="mc-photo-wrap"><div class="mc-photo"><div class="mc-placeholder">🎯</div></div></div>
+        <div class="mc-body">
+          <h3>Equipo Comercial</h3><p class="mc-role">Ventas & Atención al Cliente</p>
+          <p class="mc-bio">Listos para asesorarte en la selección del material correcto para tu proyecto. Responden en minutos y nunca dejan una consulta sin respuesta.</p>
+          <a href="https://wa.me/573108761410?text=Asesoría%20comercial" target="_blank" class="mc-wa"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Consultar</a>
+        </div>
+      </div>
+
+      <div class="member-card reveal d3">
+        <div class="mcglow"></div>
+        <div class="mc-photo-wrap"><div class="mc-photo"><div class="mc-placeholder">🔧</div></div></div>
+        <div class="mc-body">
+          <h3>Soporte Técnico</h3><p class="mc-role">Servicio & Mantenimiento</p>
+          <p class="mc-bio">Técnicos certificados en plotters e impresoras de gran formato. Mantenimiento preventivo, correctivo y calibración. Respuesta &lt;24 h garantizada.</p>
+          <a href="https://wa.me/573108761410?text=Servicio%20técnico" target="_blank" class="mc-wa"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Agendar</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TEAM PHOTO -->
+    <div class="reveal" style="margin-top:clamp(40px,6vw,72px);">
+      <div style="border-radius:24px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:clamp(16px,2.5vw,28px);">
+        <p style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#409cff;margin-bottom:16px;">El equipo completo</p>
+        <img src="imagenes%20facing%20company/TEAM.png" alt="Equipo Roofline" style="width:100%;border-radius:16px;object-fit:cover;max-height:520px;" onerror="this.parentElement.parentElement.style.display='none'">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MASCOTA -->
+<section class="mascota">
+  <div class="mascota-inner">
+    <div class="mascota-img-wrap reveal">
+      <div class="mascota-glow"></div>
+      <img src="imagenes%20facing%20company/RoofLine%20Character%20Beta%201.png" alt="Roofline Character" onerror="this.style.display='none'">
+    </div>
+    <div class="reveal d2">
+      <span class="label">Identidad de marca</span>
+      <div class="mascota-body">
+        <h2>El Character<br>de Roofline.</h2>
+        <p>Nuestro mascota representa el espíritu de Roofline: energético, innovador y siempre listo para ayudar. Es la cara amable detrás de cada asesoría técnica y cada envío.</p>
+        <p>Cuando pienses en Roofline, piensa en un aliado que está ahí siempre que lo necesitas, con las mejores herramientas del mercado.</p>
+        <div class="mascota-tags">
+          <span class="m-tag">Confiable</span>
+          <span class="m-tag">Innovador</span>
+          <span class="m-tag">Cercano</span>
+          <span class="m-tag">Técnico</span>
+          <span class="m-tag">Colombia</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="nos-stats">
+  <div class="wrap">
+    <div class="stats-row">
+      <div class="sbox"><span class="sbox-num"><span class="counter" data-target="10">0</span><span class="sbox-plus">+</span></span><p class="sbox-label">Años de experiencia</p></div>
+      <div class="sbox"><span class="sbox-num"><span class="counter" data-target="500">0</span><span class="sbox-plus">+</span></span><p class="sbox-label">Productos en catálogo</p></div>
+      <div class="sbox"><span class="sbox-num"><span class="counter" data-target="1000">0</span><span class="sbox-plus">+</span></span><p class="sbox-label">Clientes activos</p></div>
+      <div class="sbox"><span class="sbox-num"><span class="counter" data-target="20">0</span><span class="sbox-plus">+</span></span><p class="sbox-label">Ciudades Colombia</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="nos-cta">
+  <div class="reveal">
+    <span class="label" style="display:block;text-align:center">Trabajemos juntos</span>
+    <h2>¿Tienes un proyecto?<br>Hablemos hoy.</h2>
+    <p>Cuéntanos qué necesitas y nuestro equipo te responde en minutos con la mejor solución.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/573108761410?text=Hola%20Roofline%2C%20tengo%20un%20proyecto" target="_blank" class="btn btn-wa">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Escribir por WhatsApp
+      </a>
+      <a href="index.html" class="btn btn-outline btn-sm">← Volver al inicio</a>
+    </div>
+  </div>
+</section>
+
+<footer class="nos-foot">
+  <div class="nos-foot-inner">
+    <p>© 2024 Roofline Company. Todos los derechos reservados.</p>
+    <a href="https://www.rooflinecompany.com" target="_blank">rooflinecompany.com</a>
+    <a href="tel:+573108761410">+57 310 876 1410</a>
+  </div>
+</footer>
+
+<a class="wa-fab" href="https://wa.me/573108761410?text=Hola%20Roofline" target="_blank" aria-label="WhatsApp">
+  <svg width="25" height="25" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener('load', () => {
+  gsap.to('.bg-orb', { opacity: 1, duration: 2, ease: 'power2.out', stagger: .4 });
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.to('#hEye',  { opacity: 1, y: 0, duration: .6 }, .3)
+    .to('#hH1',   { opacity: 1, y: 0, duration: 1, ease: 'power4.out' }, .5)
+    .to('#hSub',  { opacity: 1, duration: .7 }, .75)
+    .to('#hCtas', { opacity: 1, duration: .6 }, .9)
+    .to('#hCard', { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' }, .6);
+});
+const nav = document.getElementById('nav');
+let ly = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  nav.classList.toggle('solid', y > 30);
+  if (y > ly + 5 && y > 160) nav.classList.add('hide');
+  else if (y < ly) nav.classList.remove('hide');
+  ly = y;
+}, { passive: true });
+gsap.to('.bg-orb-1', { yPercent: -20, ease: 'none', scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom top', scrub: 2 } });
+gsap.to('.bg-orb-2', { yPercent:  15, ease: 'none', scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom top', scrub: 3 } });
+const tlObs = new IntersectionObserver(e => e.forEach((en,i) => { if(en.isIntersecting) en.target.classList.add('in'); }), { threshold: .2 });
+document.querySelectorAll('.tl-item').forEach((el, i) => { el.style.transitionDelay = `${i*.1}s`; tlObs.observe(el); });
+const ro = new IntersectionObserver(e => e.forEach(en => { if(en.isIntersecting){en.target.classList.add('in'); ro.unobserve(en.target);} }), { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+function count(el, target) { const s=performance.now(),dur=1600,ease=t=>1-Math.pow(1-t,3),tick=n=>{const p=Math.min((n-s)/dur,1);el.textContent=Math.round(ease(p)*target).toLocaleString('es-CO');if(p<1)requestAnimationFrame(tick);};requestAnimationFrame(tick); }
+document.querySelectorAll('[data-target]').forEach(el => { new IntersectionObserver(entries=>{if(entries[0].isIntersecting)count(entries[0].target,parseInt(entries[0].target.dataset.target));},{threshold:.4}).observe(el); });
+document.querySelector('a[href="#equipo"]')?.addEventListener('click', e => { e.preventDefault(); document.getElementById('equipo').scrollIntoView({behavior:'smooth'}); });
+</script>
+</body>
+</html>

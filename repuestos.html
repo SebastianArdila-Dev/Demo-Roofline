@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repuestos Originales – Roofline</title>
+<style>
+  :root {
+    --blue: #0071e3;
+    --blue-l: #409cff;
+    --green: #25d366;
+    --bg: #000;
+    --card-bg: #111;
+    --card-border: rgba(255,255,255,.08);
+    --text: #f5f5f7;
+    --text-muted: rgba(255,255,255,.5);
+    --radius: 16px;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+    height: 52px;
+    background: rgba(0,0,0,.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .nav-inner {
+    width: min(90vw, 1160px); margin: 0 auto; height: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo img { height: 24px; filter: brightness(0) invert(1); }
+  .nav-logo span { font-size: 16px; font-weight: 700; color: #fff; }
+  .nav-back { font-size: 13px; color: rgba(255,255,255,.6); text-decoration: none; transition: color .2s; }
+  .nav-back:hover { color: #fff; }
+  .nav-wa {
+    font-size: 13px; color: #fff; background: var(--green);
+    padding: 7px 16px; border-radius: 980px; text-decoration: none;
+    font-weight: 500; transition: opacity .2s;
+  }
+  .nav-wa:hover { opacity: .85; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden; padding: 120px 24px 80px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,113,227,.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 70%, rgba(64,156,255,.12) 0%, transparent 60%),
+                #000;
+  }
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); opacity: .35;
+    animation: orbFloat 8s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 480px; height: 480px; background: #0071e3; top: -10%; left: -5%; animation-delay: 0s; }
+  .orb-2 { width: 320px; height: 320px; background: #409cff; top: 20%; right: -5%; animation-delay: -3s; }
+  .orb-3 { width: 240px; height: 240px; background: #0071e3; bottom: 10%; left: 30%; animation-delay: -6s; }
+  @keyframes orbFloat {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, -40px) scale(1.08); }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 760px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,113,227,.18); border: 1px solid rgba(0,113,227,.35);
+    color: var(--blue-l); font-size: 12px; font-weight: 500;
+    padding: 5px 14px; border-radius: 980px; margin-bottom: 28px;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    font-weight: 800; letter-spacing: -.03em; line-height: 1.05;
+    background: linear-gradient(135deg, #fff 40%, var(--blue-l));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+  }
+  .hero p {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: rgba(255,255,255,.65); line-height: 1.6; max-width: 560px; margin: 0 auto 40px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--blue); color: #fff;
+    padding: 14px 28px; border-radius: 980px; text-decoration: none;
+    font-size: 15px; font-weight: 600;
+    box-shadow: 0 0 40px rgba(0,113,227,.4);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(0,113,227,.6); }
+
+  /* ── SECTION WRAPPER ── */
+  .section { padding: 80px 24px; }
+  .container { width: min(100%, 1160px); margin: 0 auto; }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 560px; margin: 0 auto 56px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    opacity: .4; pointer-events: none;
+  }
+  #searchInput {
+    width: 100%; padding: 14px 16px 14px 46px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 980px; color: #fff;
+    font-size: 15px; font-family: var(--font);
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  #searchInput::placeholder { color: rgba(255,255,255,.35); }
+  #searchInput:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0,113,227,.2);
+  }
+
+  /* ── FILTER TABS ── */
+  .filter-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 48px;
+  }
+  .tab-btn {
+    padding: 8px 20px; border-radius: 980px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: transparent; color: rgba(255,255,255,.6);
+    font-size: 14px; font-family: var(--font); font-weight: 500;
+    cursor: pointer; transition: all .2s;
+  }
+  .tab-btn:hover { border-color: rgba(255,255,255,.3); color: #fff; }
+  .tab-btn.active {
+    background: var(--blue); border-color: var(--blue);
+    color: #fff; box-shadow: 0 0 20px rgba(0,113,227,.35);
+  }
+
+  /* ── PARTS GRID ── */
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 1024px) { .parts-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .parts-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+  @media (max-width: 400px)  { .parts-grid { grid-template-columns: 1fr; } }
+
+  .part-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .3s, box-shadow .3s, border-color .3s;
+    cursor: default;
+    opacity: 0; transform: translateY(24px);
+  }
+  .part-card.visible { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s ease, box-shadow .3s, border-color .3s; }
+  .part-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(0,113,227,.25);
+    border-color: rgba(0,113,227,.3);
+  }
+  .part-card.hidden { display: none; }
+
+  .part-img {
+    width: 100%; height: 160px; object-fit: cover;
+    display: block; background: #1a1a2e;
+  }
+  .part-img-placeholder {
+    width: 100%; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+
+  .part-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .part-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .part-compat { font-size: 11px; color: var(--text-muted); }
+  .part-price { font-size: 13px; color: var(--blue-l); font-weight: 600; margin-top: auto; }
+
+  .part-footer {
+    padding: 10px 14px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .badge {
+    font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 980px;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .badge-stock  { background: rgba(52,199,89,.15); color: #34c759; border: 1px solid rgba(52,199,89,.25); }
+  .badge-order  { background: rgba(255,159,10,.12); color: #ff9f0a; border: 1px solid rgba(255,159,10,.25); }
+
+  .btn-pedir {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--green); color: #fff;
+    padding: 6px 12px; border-radius: 980px; text-decoration: none;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-pedir:hover { opacity: .88; transform: scale(1.04); }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    margin-top: 64px; padding: 48px 32px; text-align: center;
+    background: linear-gradient(135deg, rgba(0,113,227,.12), rgba(64,156,255,.07));
+    border: 1px solid rgba(0,113,227,.2);
+    border-radius: 24px;
+  }
+  .cta-banner h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; margin-bottom: 12px; }
+  .cta-banner p  { color: var(--text-muted); margin-bottom: 28px; font-size: 15px; }
+  .btn-wa-big {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green); color: #fff;
+    padding: 14px 28px; border-radius: 980px; text-decoration: none;
+    font-size: 15px; font-weight: 600;
+    box-shadow: 0 0 30px rgba(37,211,102,.3);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-wa-big:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(37,211,102,.45); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px; padding: 40px 24px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    text-align: center; color: rgba(255,255,255,.35); font-size: 13px;
+  }
+  footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+  footer a:hover { color: #fff; }
+
+  /* ── WA FAB ── */
+  .fab {
+    position: fixed; bottom: 28px; right: 24px; z-index: 800;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--green); display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 24px rgba(37,211,102,.4);
+    text-decoration: none; transition: transform .2s, box-shadow .2s;
+    animation: fabPulse 3s ease-in-out infinite;
+  }
+  .fab:hover { transform: scale(1.1); box-shadow: 0 8px 36px rgba(37,211,102,.6); }
+  @keyframes fabPulse {
+    0%,100% { box-shadow: 0 4px 24px rgba(37,211,102,.4); }
+    50%      { box-shadow: 0 4px 36px rgba(37,211,102,.65); }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    text-align: center; margin-bottom: 48px;
+  }
+  .section-title h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800; letter-spacing: -.025em;
+    background: linear-gradient(135deg, #fff 40%, var(--blue-l));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+  .section-title p { color: var(--text-muted); font-size: 15px; max-width: 480px; margin: 0 auto; }
+
+  #noResults {
+    grid-column: 1 / -1; text-align: center; padding: 60px 0;
+    color: var(--text-muted); font-size: 15px; display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="imagenes%20facing%20company/Logo%20Roofline.png" alt="Roofline" onerror="this.style.display='none'">
+      <span>Roofline</span>
+    </a>
+    <a href="index.html" class="nav-back">← Inicio</a>
+    <a href="https://wa.me/573108761410" target="_blank" class="nav-wa">WhatsApp</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.5v3l1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Repuestos &amp; Consumibles
+    </div>
+    <h1>Repuestos Originales</h1>
+    <p>Piezas genuinas y compatibles para las principales marcas: Epson, Roland, Mimaki, Mutoh. Garantiza el máximo rendimiento de tu equipo.</p>
+    <a href="#catalogo" class="hero-cta">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ver catálogo
+    </a>
+  </div>
+</section>
+
+<!-- CATALOG SECTION -->
+<section class="section" id="catalogo">
+  <div class="container">
+
+    <!-- Section title -->
+    <div class="section-title reveal">
+      <h2>Catálogo de Repuestos</h2>
+      <p>Inventario disponible para entrega inmediata en Colombia</p>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap reveal">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="7" cy="7" r="5" stroke="white" stroke-width="1.5"/>
+        <path d="M11 11l2.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Busca por modelo de equipo o nombre del repuesto…" autocomplete="off">
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs reveal">
+      <button class="tab-btn active" data-filter="todos">Todos</button>
+      <button class="tab-btn" data-filter="epson">Epson</button>
+      <button class="tab-btn" data-filter="roland">Roland</button>
+      <button class="tab-btn" data-filter="mimaki">Mimaki</button>
+      <button class="tab-btn" data-filter="mutoh">Mutoh</button>
+      <button class="tab-btn" data-filter="generico">Genérico</button>
+    </div>
+
+    <!-- Parts Grid -->
+    <div class="parts-grid" id="partsGrid">
+      <div id="noResults">No se encontraron repuestos para tu búsqueda.</div>
+    </div>
+
+    <!-- CTA Banner -->
+    <div class="cta-banner reveal">
+      <h2>¿No encontraste el repuesto?</h2>
+      <p>Cuéntanos el modelo de tu equipo y lo conseguimos. Importamos repuestos originales y compatibles desde distribuidores certificados.</p>
+      <a href="https://wa.me/573108761410?text=Hola%20Roofline%2C%20busco%20un%20repuesto%20para%20mi%20equipo%3A%20" target="_blank" class="btn-wa-big">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9c0 1.33.35 2.58.96 3.67L1.5 16.5l3.97-1.01A7.47 7.47 0 0 0 9 16.5c4.14 0 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5Z" fill="currentColor" fill-opacity=".3" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 5.5s-.5 0-.5.5v1c0 .5.5 1.5 1.5 2.5S9 11 9.5 11h1c.5 0 .5-.5.5-.5V9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Roofline Colombia · <a href="https://wa.me/573108761410">+57 310 876 1410</a> · Insumos de gran formato</p>
+</footer>
+
+<!-- WA FAB -->
+<a href="https://wa.me/573108761410" target="_blank" class="fab" title="Escríbenos por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.07-1.35A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2Zm5.07 13.57c-.22.62-1.28 1.18-1.76 1.22-.45.04-.87.2-2.93-.61-2.46-.97-4.04-3.47-4.16-3.63-.12-.16-.98-1.31-.98-2.5 0-1.18.62-1.76.84-2 .22-.24.48-.3.64-.3l.46.01c.15 0 .35-.06.55.42l.7 1.72c.06.14.1.31.02.49l-.26.52c-.08.16-.17.34-.07.54.1.2.46.75.98 1.22.67.6 1.24.79 1.42.87.18.08.28.07.38-.04l.54-.6c.14-.16.28-.12.47-.07l1.65.78c.19.09.31.14.35.22.04.08.04.46-.18 1.08Z"/></svg>
+</a>
+
+<script>
+  /* ── DATA ── */
+  const parts = [
+    {
+      id: 1, name: "Cabezal Epson DX5 / DX7",
+      compat: "Compatible Epson, Roland", price: "Consultar",
+      stock: "stock", brands: ["epson","roland"],
+      img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80",
+      emoji: null
+    },
+    {
+      id: 2, name: "Cabezal Epson i3200-E1",
+      compat: "Epson SureColor", price: "Consultar",
+      stock: "stock", brands: ["epson"],
+      img: null, emoji: "🔧"
+    },
+    {
+      id: 3, name: "Tinta Eco-solvente 1L",
+      compat: "Universal — todas las marcas", price: "Desde $45.000",
+      stock: "stock", brands: ["generico"],
+      img: "https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?w=400&q=80",
+      emoji: null
+    },
+    {
+      id: 4, name: "Encoder Strip 180lpi Roland",
+      compat: "Roland VG / BN series", price: "Consultar",
+      stock: "order", brands: ["roland"],
+      img: null, emoji: "📏"
+    },
+    {
+      id: 5, name: "Damper Epson",
+      compat: "Universal Epson", price: "Desde $8.000",
+      stock: "stock", brands: ["epson"],
+      img: null, emoji: "💧"
+    },
+    {
+      id: 6, name: "Capping Station Epson",
+      compat: "Epson S / SC series", price: "Consultar",
+      stock: "stock", brands: ["epson"],
+      img: null, emoji: "🔩"
+    },
+    {
+      id: 7, name: "Tinta Sublimación 1L",
+      compat: "Universal Sublimación", price: "Desde $55.000",
+      stock: "stock", brands: ["generico"],
+      img: null, emoji: "🎨"
+    },
+    {
+      id: 8, name: "Cabezal Roland DX7",
+      compat: "Roland VG / RA / VS", price: "Consultar",
+      stock: "order", brands: ["roland"],
+      img: null, emoji: "⚙️"
+    },
+    {
+      id: 9, name: "Tubería de tinta flexible",
+      compat: "Universal", price: "Desde $12.000",
+      stock: "stock", brands: ["generico"],
+      img: null, emoji: "🔗"
+    },
+    {
+      id: 10, name: "Sensor de papel",
+      compat: "Epson / Roland", price: "Consultar",
+      stock: "stock", brands: ["epson","roland"],
+      img: null, emoji: "📡"
+    },
+    {
+      id: 11, name: "Tarjeta principal Epson",
+      compat: "Consultar modelo", price: "Consultar",
+      stock: "order", brands: ["epson"],
+      img: null, emoji: "🗂️"
+    },
+    {
+      id: 12, name: "Kit de mantenimiento",
+      compat: "Universal", price: "Desde $35.000",
+      stock: "stock", brands: ["generico"],
+      img: null, emoji: "🛠️"
+    }
+  ];
+
+  const placeholderColors = [
+    "linear-gradient(135deg,#1a1a2e,#16213e)",
+    "linear-gradient(135deg,#0d0d1a,#1a1a3e)",
+    "linear-gradient(135deg,#001122,#002244)",
+    "linear-gradient(135deg,#111827,#1f2937)"
+  ];
+
+  function buildCard(p) {
+    const waMsg = encodeURIComponent(`Hola Roofline, quiero pedir: ${p.name} (${p.compat})`);
+    const imgHtml = p.img
+      ? `<img class="part-img" src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=part-img-placeholder style=background:${placeholderColors[p.id%4]}>${p.emoji||'⚙️'}</div>'">`
+      : `<div class="part-img-placeholder" style="background:${placeholderColors[p.id%4]}">${p.emoji||'⚙️'}</div>`;
+    const badge = p.stock === 'stock'
+      ? `<span class="badge badge-stock">En stock</span>`
+      : `<span class="badge badge-order">Bajo pedido</span>`;
+    const allBrands = p.brands.join(' ');
+    return `
+      <div class="part-card" data-brands="${allBrands}" data-name="${p.name.toLowerCase()} ${p.compat.toLowerCase()}">
+        ${imgHtml}
+        <div class="part-body">
+          <div class="part-name">${p.name}</div>
+          <div class="part-compat">${p.compat}</div>
+          <div class="part-price">${p.price}</div>
+        </div>
+        <div class="part-footer">
+          ${badge}
+          <a href="https://wa.me/573108761410?text=${waMsg}" target="_blank" class="btn-pedir">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="white"><path d="M6 1C3.24 1 1 3.24 1 6c0 .89.23 1.72.63 2.44L1 11l2.6-.68A4.96 4.96 0 0 0 6 11c2.76 0 5-2.24 5-5S8.76 1 6 1Z" fill="currentColor"/></svg>
+            Pedir
+          </a>
+        </div>
+      </div>`;
+  }
+
+  const grid = document.getElementById('partsGrid');
+  const noResults = document.getElementById('noResults');
+
+  function renderCards(filter = 'todos', search = '') {
+    const cards = grid.querySelectorAll('.part-card');
+    cards.forEach(c => c.remove());
+
+    const filtered = parts.filter(p => {
+      const brandOk = filter === 'todos' || p.brands.includes(filter);
+      const searchOk = !search || (p.name + ' ' + p.compat).toLowerCase().includes(search.toLowerCase());
+      return brandOk && searchOk;
+    });
+
+    noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+    filtered.forEach(p => {
+      grid.insertAdjacentHTML('beforeend', buildCard(p));
+    });
+
+    // Intersection observer for scroll reveal on cards
+    grid.querySelectorAll('.part-card').forEach((card, i) => {
+      setTimeout(() => {
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.disconnect(); } });
+        }, { threshold: .1 });
+        obs.observe(card);
+      }, i * 60);
+    });
+  }
+
+  let currentFilter = 'todos';
+  let currentSearch = '';
+
+  // Filter tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderCards(currentFilter, currentSearch);
+    });
+  });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', e => {
+    currentSearch = e.target.value;
+    renderCards(currentFilter, currentSearch);
+  });
+
+  // Initial render
+  renderCards();
+
+  // Scroll reveal for .reveal elements
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+</script>
+</body>
+</html>
