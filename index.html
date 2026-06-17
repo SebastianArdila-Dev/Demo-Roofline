@@ -226,6 +226,234 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 .hero__h1 em { font-style: normal; color: var(--blue-l); }
 .hero__sub { font-size: clamp(15px,1.8vw,19px); color: rgba(255,255,255,.58); line-height: 1.65; max-width: 420px; font-weight: 300; margin-bottom: 36px; opacity: 0; }
 .hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; }
+.hero__body,
+.hero__char,
+.hero__promo-bg,
+.hero-promo {
+  transition: opacity .72s var(--out), transform .72s var(--out), filter .72s var(--out);
+}
+.hero.promo-active .hero__body,
+.hero.promo-active .hero__char {
+  opacity: 0 !important;
+  transform: translateY(22px) scale(.985);
+  pointer-events: none;
+  filter: blur(2px);
+}
+.hero__promo-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 75% 18%, rgba(255,215,0,.24), transparent 28%),
+    radial-gradient(circle at 20% 32%, rgba(0,113,227,.25), transparent 30%),
+    linear-gradient(130deg, rgba(7,29,65,.95) 0%, rgba(9,16,25,.9) 48%, rgba(66,13,16,.86) 100%);
+}
+.hero__promo-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 62% 42%, #000, transparent 70%);
+}
+.hero.promo-active .hero__promo-bg { opacity: 1; }
+.hero-promo {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, .88fr) minmax(360px, 1.12fr);
+  gap: clamp(26px,5vw,64px);
+  align-items: center;
+  width: var(--w);
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  padding-top: 52px;
+  opacity: 0;
+  transform: translateY(-30px);
+  pointer-events: none;
+}
+.hero.promo-active .hero-promo {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.promo-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 7px 13px;
+  border-radius: 980px;
+  background: rgba(255,214,10,.12);
+  border: 1px solid rgba(255,214,10,.25);
+  color: #ffe083;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.promo-kicker::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffd60a;
+  box-shadow: 0 0 18px rgba(255,214,10,.65);
+}
+.hero-promo h2 {
+  max-width: 560px;
+  color: #fff;
+  font-size: clamp(40px,6.5vw,84px);
+  line-height: .96;
+  letter-spacing: -.055em;
+  margin-bottom: 18px;
+}
+.hero-promo h2 span { color: #ffd60a; }
+.hero-promo__copy {
+  max-width: 480px;
+  color: rgba(255,255,255,.68);
+  font-size: clamp(15px,1.5vw,18px);
+  line-height: 1.62;
+  margin-bottom: 26px;
+}
+.promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.btn-gold {
+  background: #ffd60a;
+  color: #121212;
+}
+.btn-gold:hover {
+  background: #ffe45f;
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 18px 42px rgba(255,214,10,.22);
+}
+.hero-collage {
+  position: relative;
+  min-height: clamp(360px,48vw,590px);
+}
+.world-card {
+  position: absolute;
+  inset: 8% 0 10% 4%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #101820;
+  box-shadow: 0 38px 100px rgba(0,0,0,.52), 0 0 0 1px rgba(255,255,255,.1);
+  transform: rotate(-2.5deg);
+}
+.world-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.07) contrast(1.02);
+}
+.world-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,.34));
+  pointer-events: none;
+}
+.promo-tile {
+  position: absolute;
+  right: 1%;
+  width: min(42%, 260px);
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(0,0,0,.74);
+  border: 1px solid rgba(255,255,255,.13);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0,0,0,.34);
+}
+.promo-tile strong {
+  display: block;
+  color: #fff;
+  font-size: clamp(20px,2.4vw,31px);
+  letter-spacing: -.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.promo-tile span {
+  display: block;
+  color: rgba(255,255,255,.66);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.promo-tile--top { top: 2%; transform: rotate(3deg); }
+.promo-tile--bottom { bottom: 4%; right: 8%; transform: rotate(-4deg); }
+.promo-badge {
+  position: absolute;
+  left: 0;
+  bottom: 3%;
+  padding: 12px 16px;
+  border-radius: 980px;
+  background: rgba(255,214,10,.94);
+  color: #101010;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  box-shadow: 0 18px 48px rgba(255,214,10,.26);
+}
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.confetti span {
+  position: absolute;
+  top: -12%;
+  left: var(--x);
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--c);
+  opacity: 0;
+  transform: translateY(-30px) rotate(0);
+}
+.hero.promo-active .confetti span {
+  animation: confetti-fall var(--d) linear infinite;
+  animation-delay: var(--delay);
+}
+@keyframes confetti-fall {
+  0% { opacity: 0; transform: translateY(-40px) rotate(0deg); }
+  10% { opacity: .95; }
+  100% { opacity: 0; transform: translateY(112vh) rotate(var(--r)); }
+}
+.hero-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 7;
+  display: flex;
+  gap: 9px;
+  transform: translateX(-50%);
+}
+.hero-dot-btn {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.28);
+  transition: width .34s var(--spring), background .24s var(--out);
+}
+.hero-dot-btn.active {
+  width: 24px;
+  border-radius: 980px;
+  background: #fff;
+}
+.hero.promo-active .hero__scroll { display: none; }
 
 /* Character mascot */
 .hero__char {
@@ -253,10 +481,32 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
 @media (max-width:768px) {
   .hero__char { height: clamp(180px,38vh,300px); right: -10px; }
   .hero__body { max-width: 65%; }
+  .hero-promo {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 18px;
+    padding-top: 72px;
+  }
+  .hero-promo h2 { font-size: clamp(36px,11vw,58px); max-width: 500px; }
+  .hero-promo__copy { max-width: 440px; }
+  .hero-collage { min-height: 280px; }
+  .world-card { inset: 2% 8% 8% 0; }
+  .promo-tile { padding: 12px; width: min(46%, 210px); }
+  .promo-tile span { display: none; }
 }
 @media (max-width:480px) {
   .hero__char { display: none; }
   .hero__body { max-width: 100%; }
+  .hero-promo {
+    padding-top: 70px;
+    padding-bottom: 56px;
+  }
+  .hero-promo__copy { font-size: 14px; margin-bottom: 16px; }
+  .promo-actions .btn { width: 100%; justify-content: center; }
+  .hero-collage { min-height: 238px; }
+  .world-card { inset: 0 0 10% 0; border-radius: 20px; transform: rotate(-1.5deg); }
+  .promo-tile { display: none; }
+  .promo-badge { left: 10px; bottom: 0; font-size: 10px; }
 }
 
 /* ══════════════════════════════════════════
@@ -761,6 +1011,64 @@ button { border: none; background: none; cursor: pointer; font: inherit; color: 
   .macbook__keyboard { display: none; }
   .macbook__trackpad { height: 10px; bottom: 7px; }
 }
+.macbook--asset {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: min(100%, 820px);
+  filter: drop-shadow(0 42px 92px rgba(0,0,0,.6));
+}
+.macbook-asset__screen {
+  position: absolute;
+  left: 24.3%;
+  top: 31.8%;
+  width: 51.4%;
+  height: 33.4%;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #101318;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.macbook--asset .map-frame {
+  width: 132%;
+  height: 132%;
+  margin: -16% 0 0 -16%;
+}
+.macbook--asset .map-bubble {
+  left: 7%;
+  right: 7%;
+  bottom: 7%;
+  max-width: none;
+  padding: 9px 11px;
+  border-radius: 11px;
+}
+.macbook--asset .map-bubble strong,
+.macbook--asset .map-bubble span {
+  font-size: 10px;
+}
+.macbook-asset__device {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.macbook--asset .macbook__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  z-index: 0;
+  width: 58%;
+  height: 30px;
+  margin: 0;
+  transform: translateX(-50%);
+}
+@media (max-width:520px) {
+  .macbook--asset .map-bubble { display: none; }
+}
 
 /* ══════════════════════════════════════════
    CTA
@@ -1036,8 +1344,23 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
       alt=""
       onerror="this.src='https://www.rooflinecompany.com/wp-content/uploads/2024/07/imagenes-home-pagina_Mesa-de-trabajo-1-copia-2-1024x577.png'">
   </div>
+  <div class="hero__promo-bg" aria-hidden="true"></div>
   <div class="hero__scrim"></div>
   <div class="hero__scrim2"></div>
+  <div class="confetti" aria-hidden="true">
+    <span style="--x:6%;--d:4.8s;--delay:.1s;--r:260deg;--c:#ffd60a"></span>
+    <span style="--x:12%;--d:5.6s;--delay:1.2s;--r:-220deg;--c:#0071e3"></span>
+    <span style="--x:18%;--d:4.9s;--delay:.8s;--r:310deg;--c:#ef233c"></span>
+    <span style="--x:25%;--d:6.2s;--delay:1.8s;--r:-280deg;--c:#ffffff"></span>
+    <span style="--x:32%;--d:5.1s;--delay:.4s;--r:240deg;--c:#ffd60a"></span>
+    <span style="--x:41%;--d:6s;--delay:2.1s;--r:-340deg;--c:#0071e3"></span>
+    <span style="--x:49%;--d:4.7s;--delay:.6s;--r:270deg;--c:#ef233c"></span>
+    <span style="--x:57%;--d:5.7s;--delay:1.5s;--r:-250deg;--c:#ffffff"></span>
+    <span style="--x:64%;--d:4.9s;--delay:.2s;--r:330deg;--c:#ffd60a"></span>
+    <span style="--x:71%;--d:6.4s;--delay:1s;--r:-310deg;--c:#0071e3"></span>
+    <span style="--x:79%;--d:5.2s;--delay:1.9s;--r:220deg;--c:#ef233c"></span>
+    <span style="--x:88%;--d:5.9s;--delay:.7s;--r:-260deg;--c:#ffffff"></span>
+  </div>
 
   <!-- Character mascot — right side, floating -->
   <img class="hero__char" id="hChar"
@@ -1059,6 +1382,29 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
       </a>
       <a href="#productos" class="btn btn-ghost">Ver productos</a>
     </div>
+  </div>
+  <div class="hero-promo" aria-live="polite">
+    <div class="hero-promo__content">
+      <span class="promo-kicker">FuBball Edition</span>
+      <h2>Celebra la pasión <span>mundialista</span> con Roofline.</h2>
+      <p class="hero-promo__copy">Promociones especiales para vinilos, banners, impresión gran formato y material POP. Viste tu negocio con energía de campeonato.</p>
+      <div class="promo-actions">
+        <a href="https://wa.me/573108761410?text=Hola%20Roofline%2C%20quiero%20promociones%20mundialistas" target="_blank" class="btn btn-gold">Ver promociones</a>
+        <a href="#productos" class="btn btn-ghost">Explorar catálogo</a>
+      </div>
+    </div>
+    <div class="hero-collage">
+      <div class="world-card">
+        <img src="Imagenes%20facing%20Company/FuBball-Edition.png" alt="Equipo Roofline con camiseta mundialista" loading="eager">
+      </div>
+      <div class="promo-tile promo-tile--top"><strong>Promos por temporada</strong><span>Paquetes para vitrinas, eventos, señalética y activaciones.</span></div>
+      <div class="promo-tile promo-tile--bottom"><strong>Listos para imprimir</strong><span>Materiales en stock para campañas rápidas y llamativas.</span></div>
+      <div class="promo-badge">Edición mundialista</div>
+    </div>
+  </div>
+  <div class="hero-dots" aria-label="Slides principales">
+    <button class="hero-dot-btn active" type="button" data-hero-go="0" aria-label="Slide impresión sin límites"></button>
+    <button class="hero-dot-btn" type="button" data-hero-go="1" aria-label="Slide FuBball Edition"></button>
   </div>
   <div class="hero__scroll"><span>Descubrir</span><div class="hero__scroll-line"></div></div>
 </section>
@@ -1361,32 +1707,21 @@ footer { background: #0a0a0a; border-top: 1px solid rgba(255,255,255,.06); paddi
       </div>
     </div>
     <div class="location__stage reveal d2" aria-label="Mapa de ubicación de Roofline">
-      <div class="macbook" id="mapMacbook">
-        <div class="macbook__lid">
-          <div class="macbook__notch"></div>
-          <div class="macbook__screen">
-            <div class="map-frame">
-              <iframe
-                title="Mapa de Roofline en Bogotá"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?hl=es&amp;z=17&amp;q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia&amp;output=embed"></iframe>
-            </div>
-            <div class="map-bubble">
-              <strong>Roofline Company</strong>
-              <span>Av. 1 de Mayo #72-34, Bogotá</span>
-            </div>
+      <div class="macbook macbook--asset" id="mapMacbook">
+        <div class="macbook-asset__screen">
+          <div class="map-frame">
+            <iframe
+              title="Mapa de Roofline en Bogotá"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?hl=es&amp;z=17&amp;q=Av.%201%20de%20Mayo%20%2372-34%2C%20Bogot%C3%A1%2C%20Colombia&amp;output=embed"></iframe>
+          </div>
+          <div class="map-bubble">
+            <strong>Roofline Company</strong>
+            <span>Av. 1 de Mayo #72-34, Bogotá</span>
           </div>
         </div>
-        <div class="macbook__base">
-          <div class="macbook__keyboard" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-          <div class="macbook__trackpad"></div>
-        </div>
+        <img class="macbook-asset__device" src="Imagenes%20facing%20Company/macbook-pro-14-inch-m8.png" alt="" loading="lazy">
         <div class="macbook__shadow"></div>
       </div>
     </div>
@@ -1471,6 +1806,31 @@ window.addEventListener('load', () => {
     .to('#hCtas',  { opacity: 1, duration: .6 }, 1.02)
     .to('#hChar',  { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out' }, .85);
 });
+
+/* ── HERO SLIDES ── */
+const hero = document.getElementById('inicio');
+const heroDots = document.querySelectorAll('[data-hero-go]');
+let heroSlide = 0;
+let heroTimer;
+
+function setHeroSlide(index) {
+  heroSlide = index % 2;
+  hero.classList.toggle('promo-active', heroSlide === 1);
+  heroDots.forEach((dot, i) => dot.classList.toggle('active', i === heroSlide));
+}
+
+function resetHeroTimer() {
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => setHeroSlide(heroSlide + 1), 7200);
+}
+
+heroDots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    setHeroSlide(parseInt(dot.dataset.heroGo, 10));
+    resetHeroTimer();
+  });
+});
+resetHeroTimer();
 
 /* ── NAV ── */
 const nav = document.getElementById('nav');
