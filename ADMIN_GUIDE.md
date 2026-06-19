@@ -1,21 +1,23 @@
 # Guía de Administración — Roofline Company
 
-> **Estado actual:** Prototipo visual / Demo de auditoría  
-> El panel `admin.html` es una interfaz de referencia. Los cambios realizados desde el panel **no persisten** en el servidor porque el sitio es estático (no tiene backend).
+> **Estado actual (rama `feature/catalogo-cms-supabase`):**
+> El panel `admin.html` es un panel **funcional real** conectado a Supabase.
+> Requiere configurar `js/supabase-client.js` con las credenciales de Supabase.
+> Ver guía completa: [`CATALOGO_CMS_IMPLEMENTATION.md`](CATALOGO_CMS_IMPLEMENTATION.md)
 
 ---
 
 ## ¿Cómo funciona el catálogo?
 
-El catálogo carga los productos desde un archivo JSON estático:
+El catálogo intenta cargar desde **Supabase** primero. Si no está configurado, usa el archivo JSON como respaldo automático:
 
 ```
-data/
-├── products.json   ← lista de todos los productos
-└── sections.json   ← configuración de secciones del catálogo
+catalogo.html
+├── Supabase configurado → tabla products (en tiempo real)
+└── Sin Supabase         → data/products.json (respaldo)
 ```
 
-Cuando alguien visita `catalogo.html`, el navegador hace un `fetch` a `data/products.json` y construye la grilla dinámicamente. **No hay base de datos ni servidor.**
+El archivo `data/products.json` se conserva como respaldo de seguridad.
 
 ---
 
