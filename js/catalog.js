@@ -1,6 +1,6 @@
 /* catalog.js — Roofline Company
- * Carga productos desde data/products.json y renderiza el catálogo.
- * Compatible con la estructura CSS existente de catalogo.html (.pcard, .sidebar-cat, .chip, etc.)
+ * Carga productos desde Supabase (con fallback a data/products.json).
+ * Toda la lógica de render es idéntica al diseño original.
  */
 
 const WA = 'https://wa.me/573108761410?text=';
@@ -24,14 +24,58 @@ let currentCat    = 'all';
 let currentSearch = '';
 let currentSort   = 'default';
 
-// ── Counts ─────────────────────────────────────────────────────────────────
+// ── Indicador de fuente de datos ─────────────────────────────────────────────
+function setDataSourceBadge(source) {
+  const badge = document.getElementById('dataSourceBadge');
+  if (!badge) return;
+  if (source === 'supabase') {
+    badge.style.display = 'none';
+  } else {
+    badge.textContent  = 'Catálogo local';
+    badge.style.display = 'inline-block';
+    badge.title        = 'Cargando desde data/products.json (Supabase no configurado)';
+  }
+}
+
+// ── Carga desde Supabase ──────────────────────────────────────────────────────
+async function loadFromSupabase() {
+  const client = window.RL_SUPABASE;
+  if (!client) throw new Error('Cliente Supabase no disponible');
+
+  const { data, error } = await client
+    .from('products')
+    .select('id, name, category, short_description, image_url, featured, display_order, wa_message, active')
+    .eq('active', true)
+    .order('display_order', { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  return data.map(p => ({
+    id:       p.id,
+    cat:      p.category,
+    name:     p.name,
+    desc:     p.short_description || '',
+    img:      p.image_url || '',
+    featured: p.featured || false,
+    waMsg:    p.wa_message || null,
+  }));
+}
+
+// ── Carga desde products.json (fallback) ──────────────────────────────────────
+async function loadFromJson() {
+  const res = await fetch('data/products.json');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+// ── Counts ────────────────────────────────────────────────────────────────────
 function getCounts() {
   const c = { all: PRODUCTS.length };
   PRODUCTS.forEach(p => { c[p.cat] = (c[p.cat] || 0) + 1; });
   return c;
 }
 
-// ── Sidebar ─────────────────────────────────────────────────────────────────
+// ── Sidebar ───────────────────────────────────────────────────────────────────
 function buildSidebar() {
   const counts = getCounts();
   const sb = document.getElementById('sidebarCats');
@@ -54,7 +98,7 @@ function buildSidebar() {
   });
 }
 
-// ── Mobile chips ─────────────────────────────────────────────────────────────
+// ── Mobile chips ──────────────────────────────────────────────────────────────
 function buildChips() {
   const counts = getCounts();
   const cr = document.getElementById('chipRow');
@@ -75,7 +119,7 @@ function buildChips() {
   });
 }
 
-// ── Filter + sort ────────────────────────────────────────────────────────────
+// ── Filter + sort ─────────────────────────────────────────────────────────────
 function getFiltered() {
   let items = currentCat === 'all' ? [...PRODUCTS] : PRODUCTS.filter(p => p.cat === currentCat);
   const q = currentSearch.trim().toLowerCase();
@@ -90,14 +134,13 @@ function getFiltered() {
   return items;
 }
 
-// ── Highlight search term ────────────────────────────────────────────────────
+// ── Highlight search term ─────────────────────────────────────────────────────
 function highlight(text, q) {
   if (!q) return text;
   const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   return text.replace(re, '<span class="hl">$1</span>');
 }
 
-// ── WA SVG icon ──────────────────────────────────────────────────────────────
 const WA_SVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.182-.01-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
 // ── Render grid ───────────────────────────────────────────────────────────────
@@ -125,14 +168,17 @@ function render() {
   }
 
   items.forEach((p, i) => {
-    const msg  = encodeURIComponent(`Hola Roofline, necesito información sobre: ${p.name}`);
-    const card = document.createElement('div');
+    const waText = p.waMsg || `Hola Roofline, necesito información sobre: ${p.name}`;
+    const msg    = encodeURIComponent(waText);
+    const card   = document.createElement('div');
     card.className = 'pcard entering';
     card.style.animationDelay = (i % 8) * 0.04 + 's';
+    if (p.featured) card.classList.add('pcard--featured');
     card.innerHTML = `
       <div class="pcard__img">
         <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">
         <span class="badge">${CATS[p.cat] || p.cat}</span>
+        ${p.featured ? '<span class="badge badge--featured">⭐ Destacado</span>' : ''}
       </div>
       <div class="pcard__body">
         <p class="pcard__name">${highlight(p.name, q)}</p>
@@ -147,7 +193,7 @@ function render() {
   });
 }
 
-// ── Search ───────────────────────────────────────────────────────────────────
+// ── Search ────────────────────────────────────────────────────────────────────
 function initSearch() {
   const searchInput = document.getElementById('searchInput');
   const clearBtn    = document.getElementById('clearSearch');
@@ -172,12 +218,10 @@ function initSearch() {
   }
 }
 
-// ── Sort ─────────────────────────────────────────────────────────────────────
+// ── Sort ──────────────────────────────────────────────────────────────────────
 function initSort() {
   const sortSel = document.getElementById('sortSel');
-  if (sortSel) {
-    sortSel.addEventListener('change', e => { currentSort = e.target.value; render(); });
-  }
+  if (sortSel) sortSel.addEventListener('change', e => { currentSort = e.target.value; render(); });
 }
 
 // ── Mega menu ─────────────────────────────────────────────────────────────────
@@ -196,7 +240,6 @@ function initMegaMenu() {
       else { megaHead.style.opacity = '0'; megaHead.style.transform = 'translateY(10px)'; }
     }
   });
-
   megaMenu.addEventListener('click', e => { if (e.target === megaMenu) closeMega(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMega(); });
 }
@@ -234,23 +277,50 @@ function initRoute() {
   if (cat && CATS[cat]) currentCat = cat;
 }
 
+// ── Loading state ─────────────────────────────────────────────────────────────
+function showLoading() {
+  const grid = document.getElementById('catalogGrid');
+  if (!grid) return;
+  grid.innerHTML = `
+    <div class="empty">
+      <div class="empty-icon" style="animation:spin 1s linear infinite;display:inline-block">⟳</div>
+      <h3>Cargando catálogo...</h3>
+      <p>Por favor espera un momento.</p>
+    </div>`;
+}
+
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function init() {
-  try {
-    const res = await fetch('data/products.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    PRODUCTS = await res.json();
-  } catch (err) {
-    console.warn('[catalog.js] No se pudo cargar data/products.json:', err.message);
-    const grid = document.getElementById('catalogGrid');
-    if (grid) {
-      grid.innerHTML = `<div class="empty">
-        <div class="empty-icon">⚠️</div>
-        <h3>Error al cargar productos</h3>
-        <p>No se pudo cargar el catálogo. Por favor escríbenos directamente.</p>
-      </div>`;
+  showLoading();
+
+  // Intentar Supabase primero
+  if (window.RL_SUPABASE_CONFIGURED && window.RL_SUPABASE) {
+    try {
+      PRODUCTS = await loadFromSupabase();
+      setDataSourceBadge('supabase');
+    } catch (err) {
+      console.warn('[catalog.js] Supabase falló, usando fallback JSON:', err.message);
+      try {
+        PRODUCTS = await loadFromJson();
+        setDataSourceBadge('json');
+      } catch (err2) {
+        console.error('[catalog.js] Fallback JSON también falló:', err2.message);
+        const grid = document.getElementById('catalogGrid');
+        if (grid) grid.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><h3>Error al cargar</h3><p>No se pudo cargar el catálogo. Por favor escríbenos directamente.</p></div>`;
+        return;
+      }
     }
-    return;
+  } else {
+    // Supabase no configurado: cargar desde JSON
+    try {
+      PRODUCTS = await loadFromJson();
+      setDataSourceBadge('json');
+    } catch (err) {
+      console.error('[catalog.js] Error cargando JSON:', err.message);
+      const grid = document.getElementById('catalogGrid');
+      if (grid) grid.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><h3>Error al cargar</h3><p>No se pudo cargar el catálogo. Por favor escríbenos directamente.</p></div>`;
+      return;
+    }
   }
 
   initRoute();
