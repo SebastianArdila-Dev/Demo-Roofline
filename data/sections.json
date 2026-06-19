@@ -1,0 +1,55 @@
+{
+  "hero": {
+    "title": "Catálogo Roofline",
+    "subtitle": "Vinilos, tintas, maquinaria y más de 500 referencias en un solo lugar.",
+    "cta_wa": "Hola Roofline, quiero consultar el catálogo",
+    "visible": true
+  },
+  "featured": {
+    "title": "Productos Destacados",
+    "product_ids": [1, 8, 28, 32, 14, 24],
+    "visible": true
+  },
+  "brands": {
+    "title": "Marcas que manejamos",
+    "items": [
+      { "name": "3M",        "logo": "", "visible": true },
+      { "name": "Roland DG", "logo": "", "visible": true },
+      { "name": "Mimaki",    "logo": "", "visible": true },
+      { "name": "Epson",     "logo": "", "visible": true },
+      { "name": "Oracal",    "logo": "", "visible": true },
+      { "name": "Avery",     "logo": "", "visible": true }
+    ],
+    "visible": true
+  },
+  "promotions": {
+    "title": "Promociones",
+    "items": [
+      {
+        "id": "promo1",
+        "label": "Oferta del mes",
+        "text": "10% de descuento en tintas eco-solvente Roland y Mimaki.",
+        "color": "#0071e3",
+        "visible": true
+      }
+    ],
+    "visible": false
+  },
+  "recommended_machines": {
+    "title": "Máquinas Recomendadas",
+    "product_ids": [14, 15, 16, 17],
+    "link": "maquinas.html",
+    "visible": true
+  },
+  "best_sellers": {
+    "title": "Los más consultados",
+    "product_ids": [1, 5, 8, 28, 32, 24],
+    "visible": true
+  },
+  "contact_cta": {
+    "title": "¿No encuentras lo que buscas?",
+    "text": "Tenemos +500 referencias. Escríbenos y lo conseguimos por ti.",
+    "wa_text": "Hola Roofline, busco un producto específico",
+    "visible": true
+  }
+}
