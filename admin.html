@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — Roofline Company [PROTOTIPO VISUAL]</title>
+<title>Admin — Roofline Company</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -20,76 +20,99 @@
     --out:     cubic-bezier(.4,0,.2,1);
   }
   body { background: var(--bg); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+  a { text-decoration: none; color: inherit; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: rgba(255,255,255,.08); padding: 1px 5px; border-radius: 4px; }
 
-  /* ── DEMO BANNER ── */
-  .demo-banner {
-    background: linear-gradient(90deg, #f59e0b, #ef4444);
-    color: #fff;
-    text-align: center;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .03em;
-    position: sticky;
-    top: 0;
-    z-index: 9999;
+  /* ── LOGIN SCREEN ── */
+  #loginScreen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; background: radial-gradient(ellipse at 50% -20%, rgba(0,113,227,.15) 0%, transparent 60%);
   }
-  .demo-banner span { opacity: .85; font-weight: 400; }
+  .login-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 24px;
+    padding: 40px; width: min(400px, 92vw);
+  }
+  .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .login-logo img { height: 32px; border-radius: 8px; }
+  .login-logo span { font-size: 17px; font-weight: 700; }
+  .login-title { font-size: 22px; font-weight: 700; letter-spacing: -.03em; margin-bottom: 6px; }
+  .login-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .login-error {
+    display: none; background: rgba(255,59,48,.1); border: 1px solid rgba(255,59,48,.3);
+    border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #ff6b6b; margin-bottom: 16px;
+  }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: #fff; font-size: 14px; padding: 10px 14px; border-radius: 10px; outline: none; transition: border-color .2s;
+  }
+  .form-input:focus { border-color: var(--blue); }
+  .form-input::placeholder { color: var(--muted); }
+  select.form-input { cursor: pointer; }
+  textarea.form-input { resize: vertical; min-height: 80px; }
+  .login-btn {
+    width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 980px;
+    padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 8px;
+  }
+  .login-btn:hover:not(:disabled) { background: #0077ed; transform: translateY(-1px); }
+  .login-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .login-footer { font-size: 12px; color: var(--muted); text-align: center; margin-top: 20px; }
 
-  /* ── TOPBAR ── */
+  /* ── ADMIN SCREEN ── */
+  #adminScreen { display: none; flex-direction: column; min-height: 100vh; }
+
+  /* TOPBAR */
   .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 clamp(16px,4vw,32px);
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    position: sticky;
-    top: 39px;
-    z-index: 900;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 clamp(16px,4vw,32px); height: 56px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    position: sticky; top: 0; z-index: 900;
   }
-  .topbar__logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #fff; text-decoration: none; }
+  .topbar__logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
   .topbar__logo img { height: 28px; border-radius: 6px; }
-  .topbar__badge { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: var(--yellow); color: #000; padding: 2px 7px; border-radius: 980px; }
-  .topbar__nav { display: flex; gap: 4px; }
-  .topbar__link { font-size: 13px; color: var(--muted); padding: 6px 12px; border-radius: 8px; text-decoration: none; transition: background .18s, color .18s; }
+  .topbar__badge { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: var(--blue); color: #fff; padding: 2px 7px; border-radius: 980px; }
+  .topbar__nav { display: flex; gap: 2px; }
+  .topbar__link { font-size: 13px; color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: background .18s, color .18s; }
   .topbar__link:hover, .topbar__link.active { background: rgba(255,255,255,.08); color: #fff; }
   .topbar__actions { display: flex; gap: 8px; align-items: center; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 980px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; text-decoration: none; }
-  .btn-primary { background: var(--blue); color: #fff; }
-  .btn-primary:hover { background: #0077ed; transform: translateY(-1px); }
-  .btn-ghost { background: transparent; color: #fff; border: 1.5px solid var(--border); }
-  .btn-ghost:hover { border-color: rgba(255,255,255,.3); }
-  .btn-danger { background: rgba(255,59,48,.12); color: var(--red); border: 1px solid rgba(255,59,48,.25); }
-  .btn-danger:hover { background: rgba(255,59,48,.2); }
-  .btn-sm { padding: 5px 12px; font-size: 12px; }
 
-  /* ── LAYOUT ── */
-  .layout { display: flex; min-height: calc(100vh - 95px); }
+  /* LAYOUT */
+  .layout { display: flex; flex: 1; }
   .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 12px; }
   .sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 10px; margin-bottom: 6px; margin-top: 16px; }
   .sidebar-label:first-child { margin-top: 0; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; font-size: 13px; color: var(--muted); cursor: pointer; transition: background .18s, color .18s; text-decoration: none; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; font-size: 13px; color: var(--muted); cursor: pointer; transition: background .18s, color .18s; }
   .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
   .nav-item.active { background: rgba(0,113,227,.15); color: var(--blue-l); }
   .nav-item__icon { font-size: 15px; width: 20px; text-align: center; }
   .nav-item__count { margin-left: auto; font-size: 11px; background: rgba(255,255,255,.08); padding: 1px 7px; border-radius: 980px; color: var(--muted); }
   .sidebar-div { height: 1px; background: var(--border); margin: 12px 0; }
 
-  /* ── MAIN ── */
-  .main { flex: 1; padding: clamp(20px,3vw,32px); overflow-x: hidden; }
+  /* MAIN */
+  .main { flex: 1; padding: clamp(20px,3vw,32px); overflow-x: hidden; min-width: 0; }
   .page { display: none; }
   .page.active { display: block; }
 
-  /* ── PAGE HEADER ── */
-  .page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 980px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #0077ed; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: #fff; border: 1.5px solid var(--border); }
+  .btn-ghost:hover:not(:disabled) { border-color: rgba(255,255,255,.3); }
+  .btn-danger { background: rgba(255,59,48,.12); color: var(--red); border: 1px solid rgba(255,59,48,.25); }
+  .btn-danger:hover:not(:disabled) { background: rgba(255,59,48,.2); }
+  .btn-green { background: rgba(37,211,102,.12); color: var(--green); border: 1px solid rgba(37,211,102,.25); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* PAGE HEADER */
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
   .page-title { font-size: clamp(18px,2.5vw,24px); font-weight: 700; letter-spacing: -.03em; }
   .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-  /* ── STATS ── */
-  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; margin-bottom: 28px; }
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 12px; margin-bottom: 28px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
   .stat__value { font-size: 28px; font-weight: 700; letter-spacing: -.04em; }
   .stat__label { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -97,515 +120,426 @@
   .stat--green .stat__value { color: var(--green); }
   .stat--yellow .stat__value { color: var(--yellow); }
 
-  /* ── TOOLBAR ── */
+  /* TOOLBAR */
   .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-  .search { flex: 1; min-width: 200px; position: relative; }
+  .search { flex: 1; min-width: 180px; position: relative; }
   .search input { width: 100%; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 13px; padding: 8px 12px 8px 36px; border-radius: 10px; outline: none; transition: border-color .2s; }
   .search input:focus { border-color: var(--blue); }
-  .search__icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .search__icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
   .filter-sel { background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 13px; padding: 8px 12px; border-radius: 10px; outline: none; cursor: pointer; }
 
-  /* ── TABLE ── */
+  /* TABLE */
   .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 680px; }
   thead tr { border-bottom: 1px solid var(--border); }
-  thead th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  thead th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: rgba(255,255,255,.03); }
-  tbody td { padding: 12px 16px; vertical-align: middle; }
+  tbody td { padding: 10px 16px; vertical-align: middle; }
+  .td-center { text-align: center; }
+  .td-right { text-align: right; }
+  .empty-row { text-align: center; color: var(--muted); padding: 40px !important; }
   .product-cell { display: flex; align-items: center; gap: 10px; }
   .product-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: rgba(255,255,255,.06); flex-shrink: 0; }
-  .product-name { font-weight: 600; }
-  .product-desc { font-size: 11px; color: var(--muted); margin-top: 1px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .product-name { font-weight: 600; font-size: 13px; }
+  .product-slug { font-size: 11px; color: var(--muted); font-family: 'SF Mono', monospace; margin-top: 1px; }
+  .action-btns { display: flex; gap: 6px; justify-content: flex-end; }
   .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 980px; }
   .badge-blue { background: rgba(0,113,227,.2); color: var(--blue-l); }
-  .badge-green { background: rgba(37,211,102,.15); color: var(--green); }
-  .action-btns { display: flex; gap: 6px; }
 
-  /* ── MODAL ── */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 9000; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: min(540px,100%); max-height: 90vh; overflow-y: auto; padding: 28px; }
+  /* TOGGLE & STAR BUTTONS */
+  .toggle-btn { border: none; padding: 4px 10px; border-radius: 980px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .18s; }
+  .toggle-btn--on  { background: rgba(37,211,102,.15); color: var(--green); }
+  .toggle-btn--off { background: rgba(255,255,255,.06); color: var(--muted); }
+  .toggle-btn:hover { filter: brightness(1.2); }
+  .star-btn { border: none; background: transparent; font-size: 16px; cursor: pointer; opacity: .3; transition: opacity .18s, transform .18s; }
+  .star-btn--on { opacity: 1; }
+  .star-btn:hover { opacity: 1; transform: scale(1.2); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 9000; align-items: center; justify-content: center; padding: 20px; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: min(580px,100%); max-height: 92vh; overflow-y: auto; padding: 28px; }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
   .modal-title { font-size: 18px; font-weight: 700; }
   .modal-close { background: rgba(255,255,255,.08); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
   .modal-close:hover { background: rgba(255,255,255,.15); }
-  .form-group { margin-bottom: 16px; }
-  .form-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; display: block; }
-  .form-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: #fff; font-size: 14px; padding: 10px 14px; border-radius: 10px; outline: none; transition: border-color .2s; }
-  .form-input:focus { border-color: var(--blue); }
-  .form-input::placeholder { color: var(--muted); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .modal-section { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 20px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-  /* ── NOTICE ── */
-  .notice { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25); border-radius: 12px; padding: 14px 16px; font-size: 13px; color: rgba(253,230,138,1); margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start; }
-  .notice-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .notice strong { font-weight: 700; }
+  /* IMAGE UPLOAD */
+  .img-upload-wrap { border: 1.5px dashed rgba(255,255,255,.15); border-radius: 12px; padding: 16px; background: rgba(255,255,255,.02); }
+  .img-preview { margin-top: 12px; display: none; }
+  .img-preview img { max-height: 140px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
+  .upload-progress { display: none; margin-top: 10px; }
+  .upload-progress-track { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; }
+  .upload-progress-bar { height: 100%; background: var(--blue); border-radius: 2px; transition: width .3s; width: 0; }
 
-  /* ── SECTIONS PAGE ── */
-  .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
-  .section-card__icon { font-size: 24px; flex-shrink: 0; }
+  /* SECTIONS PAGE */
+  .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+  .section-card__icon { font-size: 22px; flex-shrink: 0; }
   .section-card__info { flex: 1; }
-  .section-card__title { font-weight: 600; font-size: 15px; }
+  .section-card__title { font-weight: 600; font-size: 14px; }
   .section-card__desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
-  .section-card__actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-  .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; }
-  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-  .toggle-track { position: absolute; inset: 0; background: rgba(255,255,255,.12); border-radius: 980px; transition: background .2s; }
-  .toggle input:checked + .toggle-track { background: var(--blue); }
-  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform .2s; }
-  .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
+  .section-card__actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .section-status { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 980px; }
+  .section-status--on  { background: rgba(37,211,102,.15); color: var(--green); }
+  .section-status--off { background: rgba(255,255,255,.06); color: var(--muted); }
 
-  /* ── JSON VIEWER ── */
-  .json-block { background: #0d1117; border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #e6edf3; max-height: 400px; overflow-y: auto; }
-  .json-key { color: #79c0ff; }
-  .json-str { color: #a5d6ff; }
-  .json-num { color: #f8c555; }
+  /* TOAST */
+  #toastContainer { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.4); transform: translateY(16px); opacity: 0; transition: all .25s var(--out); pointer-events: all; max-width: 340px; }
+  .toast--visible { transform: none; opacity: 1; }
+  .toast--success { border-color: rgba(37,211,102,.3); }
+  .toast--error   { border-color: rgba(255,59,48,.3); }
+  .toast--warn    { border-color: rgba(255,214,10,.3); }
+  .toast__icon { font-size: 16px; flex-shrink: 0; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 680px) {
+  /* LOADING OVERLAY */
+  #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 9990; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+  .loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,.1); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loadingLabel { font-size: 14px; color: var(--muted); }
+
+  /* CONFIRM MODAL */
+  #confirmModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 9995; align-items: center; justify-content: center; padding: 20px; }
+  .confirm-box { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 28px; width: min(400px,100%); }
+  .confirm-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .confirm-msg { font-size: 14px; color: var(--muted); line-height: 1.6; white-space: pre-line; margin-bottom: 22px; }
+  .confirm-btns { display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* RESPONSIVE */
+  @media (max-width: 720px) {
     .sidebar { display: none; }
     .topbar__nav { display: none; }
-    .form-row { grid-template-columns: 1fr; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- DEMO BANNER -->
-<div class="demo-banner">
-  ⚠️ PROTOTIPO VISUAL — DEMO DE AUDITORÍA &nbsp;·&nbsp;
-  <span>Este panel NO guarda datos reales. No hay backend conectado. Es solo una interfaz de referencia para el cliente.</span>
-</div>
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="img/logo.png" alt="Roofline" onerror="this.style.display='none'">
+      <span>Roofline Admin</span>
+    </div>
+    <h1 class="login-title">Iniciar sesión</h1>
+    <p class="login-sub">Panel de administración del catálogo</p>
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <a href="index.html" class="topbar__logo">
-    <img src="img/logo.png" alt="Roofline" onerror="this.style.display='none'">
-    Roofline Admin
-    <span class="topbar__badge">Demo</span>
-  </a>
-  <nav class="topbar__nav">
-    <a class="topbar__link active" onclick="showPage('productos')" href="#">Productos</a>
-    <a class="topbar__link" onclick="showPage('secciones')" href="#">Secciones</a>
-    <a class="topbar__link" onclick="showPage('json')" href="#">JSON Raw</a>
-  </nav>
-  <div class="topbar__actions">
-    <a href="catalogo.html" class="btn btn-ghost btn-sm" target="_blank">Ver catálogo →</a>
+    <div class="login-error" id="loginError"></div>
+
+    <form id="loginForm" autocomplete="on">
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">Correo electrónico</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="admin@roofline.co" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPassword">Contraseña</label>
+        <input class="form-input" id="loginPassword" type="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button class="login-btn" type="submit" id="loginBtn">Entrar</button>
+    </form>
+    <p class="login-footer">Solo administradores autorizados pueden acceder.</p>
   </div>
-</header>
-
-<!-- LAYOUT -->
-<div class="layout">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <p class="sidebar-label">Catálogo</p>
-    <a class="nav-item active" onclick="showPage('productos')" href="#">
-      <span class="nav-item__icon">📦</span> Productos
-      <span class="nav-item__count" id="sidebarCount">43</span>
-    </a>
-    <a class="nav-item" onclick="showPage('secciones')" href="#">
-      <span class="nav-item__icon">🗂️</span> Secciones
-    </a>
-    <div class="sidebar-div"></div>
-    <p class="sidebar-label">Referencia</p>
-    <a class="nav-item" onclick="showPage('json')" href="#">
-      <span class="nav-item__icon">{ }</span> JSON Raw
-    </a>
-    <a class="nav-item" href="ADMIN_GUIDE.md" target="_blank">
-      <span class="nav-item__icon">📄</span> Guía Admin
-    </a>
-    <div class="sidebar-div"></div>
-    <p class="sidebar-label">Sitio</p>
-    <a class="nav-item" href="catalogo.html" target="_blank">
-      <span class="nav-item__icon">🔗</span> Catálogo público
-    </a>
-    <a class="nav-item" href="index.html" target="_blank">
-      <span class="nav-item__icon">🏠</span> Inicio
-    </a>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- ═══ PÁGINA: PRODUCTOS ═══ -->
-    <div class="page active" id="page-productos">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Productos</h1>
-          <p class="page-subtitle">Gestiona el catálogo de productos desde <code>data/products.json</code></p>
-        </div>
-        <button class="btn btn-primary" onclick="openModal()">+ Nuevo producto</button>
-      </div>
-
-      <div class="notice">
-        <span class="notice-icon">💡</span>
-        <div>
-          <strong>Modo prototipo:</strong> Los cambios que hagas aquí son visuales y se pierden al recargar la página.
-          Para edición real, edita directamente el archivo <code>data/products.json</code> en el servidor.
-          En la <strong>Fase 2</strong> esto se conectará a un CMS real (Sanity, Decap o Supabase).
-        </div>
-      </div>
-
-      <div class="stats" id="statsRow"></div>
-
-      <div class="toolbar">
-        <div class="search">
-          <svg class="search__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="adminSearch" placeholder="Buscar producto..." oninput="filterAdmin()">
-        </div>
-        <select class="filter-sel" id="adminCatFilter" onchange="filterAdmin()">
-          <option value="">Todas las categorías</option>
-        </select>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Categoría</th>
-              <th>ID</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="adminTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ═══ PÁGINA: SECCIONES ═══ -->
-    <div class="page" id="page-secciones">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Secciones</h1>
-          <p class="page-subtitle">Controla qué secciones aparecen en el catálogo (<code>data/sections.json</code>)</p>
-        </div>
-      </div>
-
-      <div class="notice">
-        <span class="notice-icon">💡</span>
-        <div>
-          <strong>Modo prototipo:</strong> Los toggles aquí son visuales. Para cambiar visibilidad real, edita <code>data/sections.json</code> y cambia <code>"visible": true/false</code>.
-        </div>
-      </div>
-
-      <div id="sectionsList"></div>
-    </div>
-
-    <!-- ═══ PÁGINA: JSON RAW ═══ -->
-    <div class="page" id="page-json">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">JSON Raw</h1>
-          <p class="page-subtitle">Vista del contenido actual de <code>data/products.json</code></p>
-        </div>
-        <a href="data/products.json" target="_blank" class="btn btn-ghost btn-sm">Abrir archivo →</a>
-      </div>
-      <div class="notice">
-        <span class="notice-icon">📝</span>
-        <div>
-          Para editar productos en producción, modifica directamente <code>data/products.json</code> y sube el archivo al servidor.
-          El catálogo público se actualiza automáticamente sin recompilar nada.
-        </div>
-      </div>
-      <div class="json-block" id="jsonBlock">Cargando...</div>
-    </div>
-
-  </main>
 </div>
 
-<!-- ═══ MODAL: NUEVO / EDITAR PRODUCTO ═══ -->
-<div class="modal-overlay" id="modalOverlay">
+<!-- ═══ ADMIN SCREEN ═══ -->
+<div id="adminScreen">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__logo">
+      <img src="img/logo.png" alt="Roofline" onerror="this.style.display='none'">
+      Roofline Admin
+      <span class="topbar__badge">CMS</span>
+    </div>
+    <nav class="topbar__nav">
+      <a class="topbar__link active" data-page="productos">Productos</a>
+      <a class="topbar__link" data-page="secciones">Secciones</a>
+    </nav>
+    <div class="topbar__actions">
+      <a href="catalogo.html" class="btn btn-ghost btn-sm" target="_blank">Ver catálogo →</a>
+      <button class="btn btn-ghost btn-sm" id="signOutBtn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <p class="sidebar-label">Catálogo</p>
+      <div class="nav-item active" data-page="productos">
+        <span class="nav-item__icon">📦</span> Productos
+        <span class="nav-item__count" id="sidebarProductCount">0</span>
+      </div>
+      <div class="nav-item" data-page="secciones">
+        <span class="nav-item__icon">🗂️</span> Secciones
+      </div>
+      <div class="sidebar-div"></div>
+      <p class="sidebar-label">Sitio</p>
+      <a class="nav-item" href="catalogo.html" target="_blank">
+        <span class="nav-item__icon">🔗</span> Catálogo público
+      </a>
+      <a class="nav-item" href="index.html" target="_blank">
+        <span class="nav-item__icon">🏠</span> Inicio
+      </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ═══ PRODUCTOS ═══ -->
+      <div class="page active" id="page-productos">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Productos</h1>
+            <p class="page-subtitle">Gestiona el catálogo desde Supabase</p>
+          </div>
+          <button class="btn btn-primary" id="newProductBtn">+ Nuevo producto</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat stat--blue"><div class="stat__value" id="statTotal">—</div><div class="stat__label">Total</div></div>
+          <div class="stat stat--green"><div class="stat__value" id="statActive">—</div><div class="stat__label">Activos</div></div>
+          <div class="stat stat--yellow"><div class="stat__value" id="statFeatured">—</div><div class="stat__label">Destacados</div></div>
+          <div class="stat"><div class="stat__value" id="statCats">—</div><div class="stat__label">Categorías</div></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <span class="search__icon">🔍</span>
+            <input type="text" id="adminSearch" placeholder="Buscar producto...">
+          </div>
+          <select class="filter-sel" id="adminCatFilter">
+            <option value="">Todas las categorías</option>
+            <option value="vinilos">Vinilos</option>
+            <option value="tintas">Tintas</option>
+            <option value="maquinaria">Maquinaria</option>
+            <option value="banners">Banners y Lonas</option>
+            <option value="sublimacion">Sublimación</option>
+            <option value="reflectivos">Reflectivos</option>
+            <option value="polarizado">Polarizado</option>
+            <option value="decorativos">Decorativos</option>
+            <option value="herramientas">Herramientas</option>
+            <option value="lenticulares">Lenticulares</option>
+          </select>
+          <select class="filter-sel" id="adminFilterSel">
+            <option value="all">Todos</option>
+            <option value="active">Solo activos</option>
+            <option value="inactive">Solo inactivos</option>
+            <option value="featured">Destacados</option>
+          </select>
+          <select class="filter-sel" id="adminSortSel">
+            <option value="display_order">Orden manual</option>
+            <option value="name">Nombre A→Z</option>
+            <option value="created">Más recientes</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Destacado</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <tr><td colspan="5" class="empty-row">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ SECCIONES ═══ -->
+      <div class="page" id="page-secciones">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Secciones</h1>
+            <p class="page-subtitle">Controla qué secciones aparecen en el catálogo</p>
+          </div>
+        </div>
+        <div id="sectionsList"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══ MODAL: PRODUCTO ═══ -->
+<div class="modal-overlay" id="productModal">
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title" id="modalTitle">Nuevo producto</h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal('productModal')">✕</button>
     </div>
 
-    <div class="notice" style="margin-bottom:16px">
-      <span class="notice-icon">⚠️</span>
-      <div><strong>Prototipo:</strong> Este formulario no guarda datos en el servidor. Es solo para ver cómo se vería la interfaz real.</div>
-    </div>
+    <form id="productForm" onsubmit="return false">
+      <!-- Nombre + Slug -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <input class="form-input" id="fName" type="text" placeholder="Vinilo Blanco Brillante" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Slug *</label>
+          <input class="form-input" id="fSlug" type="text" placeholder="vinilo-blanco-brillante">
+        </div>
+      </div>
 
-    <div class="form-row">
+      <!-- Descripción corta -->
       <div class="form-group">
-        <label class="form-label">Nombre *</label>
-        <input class="form-input" id="fName" placeholder="Vinilo Blanco Brillante..." type="text">
+        <label class="form-label">Descripción corta *</label>
+        <input class="form-input" id="fShortDesc" type="text" placeholder="Una línea que describe el producto">
+      </div>
+
+      <!-- Descripción completa -->
+      <div class="form-group">
+        <label class="form-label">Descripción completa</label>
+        <textarea class="form-input" id="fDesc" placeholder="Descripción detallada del producto..."></textarea>
+      </div>
+
+      <!-- Categoría + Subcategoría + Marca -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Categoría *</label>
+          <select class="form-input" id="fCat">
+            <option value="vinilos">Vinilos</option>
+            <option value="tintas">Tintas</option>
+            <option value="maquinaria">Maquinaria</option>
+            <option value="banners">Banners y Lonas</option>
+            <option value="sublimacion">Sublimación</option>
+            <option value="reflectivos">Reflectivos</option>
+            <option value="polarizado">Polarizado</option>
+            <option value="decorativos">Decorativos</option>
+            <option value="herramientas">Herramientas</option>
+            <option value="lenticulares">Lenticulares</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subcategoría</label>
+          <input class="form-input" id="fSubcat" type="text" placeholder="Ej: Mate">
+        </div>
+      </div>
+
+      <!-- Marca + Precio + Moneda -->
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Marca</label>
+          <input class="form-input" id="fBrand" type="text" placeholder="3M, Roland...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precio</label>
+          <input class="form-input" id="fPrice" type="number" min="0" step="0.01" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Moneda</label>
+          <select class="form-input" id="fCurrency">
+            <option value="COP">COP</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Estado + Stock + Orden + Destacado -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Stock</label>
+          <select class="form-input" id="fStockStatus">
+            <option value="available">Disponible</option>
+            <option value="out_of_stock">Sin stock</option>
+            <option value="discontinued">Descontinuado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Orden de aparición</label>
+          <input class="form-input" id="fOrder" type="number" min="0" value="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:20px">
+          <input type="checkbox" id="fActive" checked style="width:16px;height:16px;accent-color:var(--blue)">
+          <label for="fActive" style="font-size:13px;cursor:pointer">Producto activo (visible en catálogo)</label>
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:20px">
+          <input type="checkbox" id="fFeatured" style="width:16px;height:16px;accent-color:var(--yellow)">
+          <label for="fFeatured" style="font-size:13px;cursor:pointer">⭐ Destacado</label>
+        </div>
+      </div>
+
+      <!-- Imagen -->
+      <p class="modal-section">Imagen del producto</p>
+      <div id="imgUploadSection">
+        <div class="img-upload-wrap">
+          <div class="form-group">
+            <label class="form-label">URL de imagen (externa o subida)</label>
+            <input class="form-input" id="fImgUrl" type="url" placeholder="https://...">
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label class="form-label">O sube un archivo (JPG, PNG, WebP — máx 5 MB)</label>
+            <input class="form-input" id="fImgFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="padding:8px">
+          </div>
+          <button class="btn btn-ghost btn-sm" type="button" id="uploadBtn" style="margin-top:8px">Subir imagen a Supabase</button>
+          <div class="upload-progress" id="uploadProgress">
+            <div class="upload-progress-track"><div class="upload-progress-bar" id="uploadProgressBar"></div></div>
+          </div>
+        </div>
+        <div class="img-preview" id="imgPreview">
+          <label class="form-label">Vista previa</label>
+          <img id="imgPreviewImg" src="" alt="Vista previa">
+        </div>
+        <input type="hidden" id="fImgPath">
+      </div>
+
+      <!-- WhatsApp + Especificaciones -->
+      <p class="modal-section">Datos adicionales</p>
+      <div class="form-group">
+        <label class="form-label">Mensaje de WhatsApp personalizado</label>
+        <input class="form-input" id="fWaMsg" type="text" placeholder="Hola Roofline, necesito información sobre: ...">
       </div>
       <div class="form-group">
-        <label class="form-label">Categoría *</label>
-        <select class="form-input" id="fCat">
-          <option value="vinilos">Vinilos</option>
-          <option value="tintas">Tintas</option>
-          <option value="maquinaria">Maquinaria</option>
-          <option value="banners">Banners y Lonas</option>
-          <option value="sublimacion">Sublimación</option>
-          <option value="reflectivos">Reflectivos</option>
-          <option value="polarizado">Polarizado</option>
-          <option value="decorativos">Decorativos</option>
-          <option value="herramientas">Herramientas</option>
-          <option value="lenticulares">Lenticulares</option>
-        </select>
+        <label class="form-label">Especificaciones (JSON)</label>
+        <textarea class="form-input" id="fSpecs" placeholder='{"ancho": "1.52m", "largo": "50m"}'></textarea>
       </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Descripción *</label>
-      <input class="form-input" id="fDesc" placeholder="Descripción breve del producto..." type="text">
-    </div>
-    <div class="form-group">
-      <label class="form-label">URL de imagen</label>
-      <input class="form-input" id="fImg" placeholder="https://..." type="url">
-    </div>
+    </form>
 
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="simulateSave()">Guardar producto (demo)</button>
+      <button class="btn btn-ghost" onclick="closeModal('productModal')">Cancelar</button>
+      <button class="btn btn-primary" id="saveProductBtn">Guardar producto</button>
     </div>
   </div>
 </div>
 
-<script>
-// ── Datos ──────────────────────────────────────────────────────────────────
-const CATS = {
-  all:'Todos', vinilos:'Vinilos', tintas:'Tintas', maquinaria:'Maquinaria',
-  banners:'Banners y Lonas', sublimacion:'Sublimación', reflectivos:'Reflectivos',
-  polarizado:'Polarizado', decorativos:'Decorativos', herramientas:'Herramientas',
-  lenticulares:'Lenticulares'
-};
+<!-- ═══ CONFIRM DIALOG ═══ -->
+<div id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirmTitle">Confirmar</div>
+    <div class="confirm-msg" id="confirmMsg"></div>
+    <div class="confirm-btns">
+      <button class="btn btn-ghost" id="confirmNo">Cancelar</button>
+      <button class="btn btn-danger" id="confirmYes">Confirmar</button>
+    </div>
+  </div>
+</div>
 
-let PRODUCTS = [];
-let SECTIONS  = {};
-let filteredProducts = [];
-let editingId = null;
+<!-- ═══ LOADING OVERLAY ═══ -->
+<div id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div id="loadingLabel">Procesando...</div>
+</div>
 
-// ── Navegación ────────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item, .topbar__link').forEach(a => a.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll(`[onclick="showPage('${id}')"]`).forEach(a => a.classList.add('active'));
-  if (id === 'json') renderJson();
-  return false;
-}
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div id="toastContainer"></div>
 
-// ── Stats ─────────────────────────────────────────────────────────────────
-function renderStats() {
-  const counts = {};
-  PRODUCTS.forEach(p => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
-  const row = document.getElementById('statsRow');
-  const statsData = [
-    { label: 'Total productos', value: PRODUCTS.length, cls: 'stat--blue' },
-    { label: 'Categorías',      value: Object.keys(counts).length, cls: '' },
-    { label: 'Vinilos',         value: counts.vinilos || 0, cls: 'stat--green' },
-    { label: 'Tintas',          value: counts.tintas || 0, cls: 'stat--yellow' },
-  ];
-  row.innerHTML = statsData.map(s =>
-    `<div class="stat ${s.cls}"><div class="stat__value">${s.value}</div><div class="stat__label">${s.label}</div></div>`
-  ).join('');
-}
-
-// ── Tabla ─────────────────────────────────────────────────────────────────
-function renderTable(items) {
-  const tbody = document.getElementById('adminTableBody');
-  if (!items.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:40px">Sin resultados</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = items.map(p => `
-    <tr>
-      <td>
-        <div class="product-cell">
-          <img class="product-thumb" src="${p.img || ''}" alt="${p.name}" onerror="this.style.opacity='.3'">
-          <div>
-            <div class="product-name">${p.name}</div>
-            <div class="product-desc">${p.desc}</div>
-          </div>
-        </div>
-      </td>
-      <td><span class="badge badge-blue">${CATS[p.cat] || p.cat}</span></td>
-      <td style="color:var(--muted);font-size:12px">#${p.id}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn btn-ghost btn-sm" onclick="openModal(${p.id})">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="simulateDelete(${p.id})">Eliminar</button>
-        </div>
-      </td>
-    </tr>`).join('');
-}
-
-function filterAdmin() {
-  const q   = document.getElementById('adminSearch').value.toLowerCase().trim();
-  const cat = document.getElementById('adminCatFilter').value;
-  filteredProducts = PRODUCTS.filter(p => {
-    const matchCat  = !cat || p.cat === cat;
-    const matchQ    = !q   || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
-    return matchCat && matchQ;
-  });
-  renderTable(filteredProducts);
-}
-
-// ── Category filter dropdown ───────────────────────────────────────────────
-function buildCatFilter() {
-  const sel = document.getElementById('adminCatFilter');
-  Object.entries(CATS).forEach(([k, v]) => {
-    if (k === 'all') return;
-    const opt = document.createElement('option');
-    opt.value = k; opt.textContent = v;
-    sel.appendChild(opt);
-  });
-}
-
-// ── Secciones ─────────────────────────────────────────────────────────────
-const SECTION_META = {
-  hero:                  { icon: '🏠', title: 'Hero / Cabecera',        desc: 'Título y subtítulo del catálogo' },
-  featured:              { icon: '⭐', title: 'Productos Destacados',    desc: 'Muestra una selección de productos al inicio' },
-  brands:                { icon: '🏷️', title: 'Marcas',                 desc: 'Logos y nombres de marcas que se manejan' },
-  promotions:            { icon: '🔥', title: 'Promociones',             desc: 'Banners de descuentos y ofertas temporales' },
-  recommended_machines:  { icon: '🖨️', title: 'Máquinas Recomendadas',  desc: 'Enlaza a la página de máquinas con productos destacados' },
-  best_sellers:          { icon: '📈', title: 'Más Consultados',         desc: 'Productos con mayor número de consultas' },
-  contact_cta:           { icon: '💬', title: 'CTA de Contacto',         desc: 'Bloque "¿No encuentras lo que buscas?"' },
-};
-
-function renderSections() {
-  const list = document.getElementById('sectionsList');
-  list.innerHTML = Object.entries(SECTION_META).map(([key, meta]) => {
-    const sec     = SECTIONS[key] || {};
-    const visible = sec.visible !== false;
-    return `
-      <div class="section-card">
-        <span class="section-card__icon">${meta.icon}</span>
-        <div class="section-card__info">
-          <div class="section-card__title">${meta.title}</div>
-          <div class="section-card__desc">${meta.desc} · <code>${key}</code></div>
-        </div>
-        <div class="section-card__actions">
-          <span style="font-size:12px;color:var(--muted);margin-right:4px">${visible ? 'Visible' : 'Oculta'}</span>
-          <label class="toggle" title="Activar/desactivar (solo demo)">
-            <input type="checkbox" ${visible ? 'checked' : ''} onchange="toggleSection('${key}', this.checked)">
-            <div class="toggle-track"></div>
-            <div class="toggle-thumb"></div>
-          </label>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function toggleSection(key, val) {
-  if (!SECTIONS[key]) SECTIONS[key] = {};
-  SECTIONS[key].visible = val;
-}
-
-// ── JSON viewer ───────────────────────────────────────────────────────────
-function syntaxHighlight(json) {
-  return json
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
-      if (/^"/.test(match)) {
-        if (/:$/.test(match)) return `<span class="json-key">${match}</span>`;
-        return `<span class="json-str">${match}</span>`;
-      }
-      return `<span class="json-num">${match}</span>`;
-    });
-}
-
-function renderJson() {
-  const block = document.getElementById('jsonBlock');
-  block.innerHTML = syntaxHighlight(JSON.stringify(PRODUCTS, null, 2));
-}
-
-// ── Modal ─────────────────────────────────────────────────────────────────
-function openModal(id) {
-  editingId = id || null;
-  const overlay = document.getElementById('modalOverlay');
-  document.getElementById('modalTitle').textContent = id ? 'Editar producto' : 'Nuevo producto';
-  if (id) {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (p) {
-      document.getElementById('fName').value = p.name;
-      document.getElementById('fCat').value  = p.cat;
-      document.getElementById('fDesc').value = p.desc;
-      document.getElementById('fImg').value  = p.img || '';
-    }
-  } else {
-    document.getElementById('fName').value = '';
-    document.getElementById('fCat').value  = 'vinilos';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fImg').value  = '';
-  }
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function simulateSave() {
-  const name = document.getElementById('fName').value.trim();
-  const cat  = document.getElementById('fCat').value;
-  const desc = document.getElementById('fDesc').value.trim();
-  const img  = document.getElementById('fImg').value.trim();
-  if (!name || !desc) { alert('Nombre y descripción son obligatorios.'); return; }
-
-  if (editingId) {
-    const idx = PRODUCTS.findIndex(p => p.id === editingId);
-    if (idx > -1) { PRODUCTS[idx] = { ...PRODUCTS[idx], name, cat, desc, img }; }
-  } else {
-    const newId = Math.max(...PRODUCTS.map(p => p.id)) + 1;
-    PRODUCTS.push({ id: newId, cat, name, desc, img });
-  }
-
-  closeModal();
-  renderStats();
-  filterAdmin();
-  document.getElementById('sidebarCount').textContent = PRODUCTS.length;
-  alert('✅ Guardado en memoria (demo). Este cambio no persiste.\nPara hacerlo real, edita data/products.json manualmente.');
-}
-
-function simulateDelete(id) {
-  if (!confirm('¿Eliminar este producto? (solo en esta sesión de demo)')) return;
-  PRODUCTS = PRODUCTS.filter(p => p.id !== id);
-  renderStats();
-  filterAdmin();
-  document.getElementById('sidebarCount').textContent = PRODUCTS.length;
-}
-
-// ── Close modal on overlay click ──────────────────────────────────────────
-document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-});
-
-// ── Init ──────────────────────────────────────────────────────────────────
-async function init() {
-  try {
-    const [pr, sr] = await Promise.all([
-      fetch('data/products.json'),
-      fetch('data/sections.json')
-    ]);
-    PRODUCTS = await pr.json();
-    SECTIONS = await sr.json();
-  } catch(e) {
-    console.warn('Error cargando datos:', e.message);
-    document.getElementById('adminTableBody').innerHTML =
-      `<tr><td colspan="4" style="color:var(--muted);padding:30px;text-align:center">
-        ⚠️ No se pudieron cargar los datos. Abre desde un servidor local o Vercel.
-      </td></tr>`;
-    return;
-  }
-
-  filteredProducts = [...PRODUCTS];
-  buildCatFilter();
-  renderStats();
-  renderTable(filteredProducts);
-  renderSections();
-  document.getElementById('sidebarCount').textContent = PRODUCTS.length;
-}
-
-init();
-</script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>
